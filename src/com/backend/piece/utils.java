@@ -18,35 +18,65 @@ public class utils {
 
     }
     private static  final int[][] KING_CHECK_MOVES = {{1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {-1,-1}, {1,-1}, {-1,1}};
-    public static boolean isKingCheck(final Piece[][] board,final ChessboardPoint piecePosition, final Piece selectedPiece){
+    private static final int[][] SPECIAL_KNIGHT_MOVES = {{2,1}, {2,-1}, {-2,1}, {-2,-1}, {1,-2}, {1,2}, {-1,-2}, {-1,2}};
+    public static boolean isKingCheck(final Piece[][] board,final ChessboardPoint targetedPosition, final Piece selectedPiece){
         Piece[][] testBoard = new Piece[8][8];
         for(int i=0; i<board.length; i++)
             for(int j=0; j<board[i].length; j++)
                 testBoard[i][j]=board[i][j];
-        testBoard[piecePosition.X][piecePosition.Y] = selectedPiece;
-        testBoard[selectedPiece.location.X][selectedPiece.location.Y]=null;
-         ChessboardPoint kingPosition = null;
-         int a = 0;
-        outer:for (Piece[] row:
-             testBoard) {
-            for (Piece piece:
-                 row) {
+        ChessboardPoint kingPosition = null;
+        if (selectedPiece instanceof King){
+            testBoard[targetedPosition.X][targetedPosition.Y] = selectedPiece;
+            testBoard[selectedPiece.location.X][selectedPiece.location.Y]=null;
+            kingPosition = targetedPosition;
+        }else{
+            testBoard[targetedPosition.X][targetedPosition.Y] = selectedPiece;
+            testBoard[selectedPiece.location.X][selectedPiece.location.Y]=null;
 
-                if (piece instanceof King && piece.chessColor==selectedPiece.chessColor){
-                    kingPosition = piece.location;
-                    break outer;
+            outer:for (Piece[] row:
+                    testBoard) {
+                for (Piece piece:
+                        row) {
+
+                    if (piece instanceof King && piece.chessColor==selectedPiece.chessColor){
+                        kingPosition = piece.location;
+                        break outer;
+                    }
                 }
             }
         }
         for (int[] candidateCoordinate:
-             KING_CHECK_MOVES) {
+                SPECIAL_KNIGHT_MOVES){
             ChessboardPoint candidatePoint = new ChessboardPoint(kingPosition.X, kingPosition.Y).offset(candidateCoordinate[0],candidateCoordinate[1]);
 
+            if (candidatePoint!=null &&testBoard[candidatePoint.X][candidatePoint.Y]!=null&&
+                    testBoard[candidatePoint.X][candidatePoint.Y].getChessColor()!= selectedPiece.chessColor &&
+                    testBoard[candidatePoint.X][candidatePoint.Y] instanceof  Knight) return true;
+        }
+            for (int[] candidateCoordinate:
+             KING_CHECK_MOVES) {
+
+            ChessboardPoint candidatePoint = new ChessboardPoint(kingPosition.X, kingPosition.Y).offset(candidateCoordinate[0],candidateCoordinate[1]);
             while (candidatePoint!=null){
 
                 if(testBoard[candidatePoint.X][candidatePoint.Y] != null){
                     if (testBoard[candidatePoint.X][candidatePoint.Y].getChessColor()!= selectedPiece.chessColor){
-                        return  true;
+                        if (testBoard[candidatePoint.X][candidatePoint.Y] instanceof  Queen){
+                            return  true;
+                        }else if (testBoard[candidatePoint.X][candidatePoint.Y] instanceof Rook &&
+                                ((candidateCoordinate[0]==0 && candidateCoordinate[1]==1)||
+                                        (candidateCoordinate[0]==0 && candidateCoordinate[1]==-1)||
+                                        (candidateCoordinate[0]==1 && candidateCoordinate[1]==0)||
+                                        (candidateCoordinate[0]==-1 && candidateCoordinate[1]==0))){
+                            return true;
+                        }else if (testBoard[candidatePoint.X][candidatePoint.Y] instanceof Bishop && //{{1,1}, {-1,-1}, {1,-1}, {-1,1}};
+                                ((candidateCoordinate[0]==1 && candidateCoordinate[1]==1)||
+                                        (candidateCoordinate[0]==-1 && candidateCoordinate[1]==-1)||
+                                        (candidateCoordinate[0]==1 && candidateCoordinate[1]==-1)||
+                                        (candidateCoordinate[0]==-1 && candidateCoordinate[1]==1))){
+                            return true;
+                        }
+
                     }else{
                         break;
                     }

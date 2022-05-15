@@ -56,6 +56,6 @@ public class ChessboardPoint {
             return null;
     }
     public static boolean isValidPoint(int x, int y){
-        return x>=0 && x<8 && y>=0 && y<8;
+        return x>=0&&x<8&&y>=0&&y<8;
     }
 }
