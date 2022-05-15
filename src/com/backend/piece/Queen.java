@@ -12,7 +12,7 @@ public class Queen extends Piece {
                 chessColor,
                 (chessColor == ChessColor.BLACK) ? 'Q' : 'q');
     }
-    private static final int[][] QUEEN_MOVES = {{1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {-1,-1}, {1,-1}, {-1,1}};
+    public static final int[][] QUEEN_MOVES = {{1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {-1,-1}, {1,-1}, {-1,1}};
 
     @Override
     ArrayList<ChessboardPoint> getCanMovePoints(Piece[][] board) {

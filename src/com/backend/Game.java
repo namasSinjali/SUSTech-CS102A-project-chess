@@ -182,7 +182,15 @@ public class Game {
         if(chess == null) return new ArrayList<>();
 
         if(chess.getChessColor() != currentPlayer) return new ArrayList<>();
-        List<ChessboardPoint> canMovePoints = chess.getCanMovePoints();
+        List<ChessboardPoint> rawCanMovePoints = chess.getCanMovePoints();
+
+        List<ChessboardPoint> canMovePoints = new ArrayList<>();
+        for (ChessboardPoint candidateCoordinate:
+             rawCanMovePoints) {
+            if (utils.isKingCheck(getChessComponents(),candidateCoordinate,chess)==false){
+                canMovePoints.add(candidateCoordinate);
+            }
+        }
 
         int size = canMovePoints.size();
         for(int i=0; i<size-1; i++){
