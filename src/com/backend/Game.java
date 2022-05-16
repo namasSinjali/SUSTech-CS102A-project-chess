@@ -11,7 +11,7 @@ public class Game {
     // A 2-dimension array to store all the chess components
     // should be initialized in your construct method.
     // i.e. = new com.backend.ChessComponent[8][8]
-    private Piece[][] pieces;
+    private final Piece[][] pieces;
 
     // What's the current player's color, black or white?
     // should be initialized in your construct method.
@@ -187,7 +187,7 @@ public class Game {
         List<ChessboardPoint> canMovePoints = new ArrayList<>();
         for (ChessboardPoint candidateCoordinate:
              rawCanMovePoints) {
-            if (utils.isKingCheck(getChessComponents(),candidateCoordinate,chess)==false){
+            if (!utils.isKingCheck(getChessComponents(), candidateCoordinate, chess)){
                 canMovePoints.add(candidateCoordinate);
             }
         }
@@ -230,29 +230,7 @@ public class Game {
 
         return true;
     }
-//    public boolean moveChess(int sourceX, int sourceY, int targetX, int targetY) {
-//        if(!ChessboardPoint.isValidPoint(sourceX, sourceY) || !ChessboardPoint.isValidPoint(targetX, targetY))
-//            return false;
-//
-//        Piece source = getChess(sourceX, sourceY);
-//        Piece target = getChess(targetX, targetY);
-//
-//        if(source.getChessColor() == this.currentPlayer &&
-//                contains(source.getCanMovePoints(), target.getLocation())){
-//            source.setLocation(new ChessboardPoint(targetX, targetY));
-//            target.setLocation(new ChessboardPoint(sourceX, sourceY));
-//            this.pieces[targetX][targetY] = source;
-//
-//            if(target instanceof Empty)
-//                this.pieces[sourceX][sourceY] = target;
-//            else
-//                this.pieces[sourceX][sourceY] = new Empty(new ChessboardPoint(sourceX, sourceY));
-//
-//            this.currentPlayer = (this.currentPlayer == ChessColor.BLACK)? ChessColor.WHITE : ChessColor.BLACK;
-//            return true;
-//        }
-//        return false;
-//    }
+
     private boolean contains(List<ChessboardPoint> points, ChessboardPoint point){
         for( ChessboardPoint p : points){
             if (p.X == point.X && p.Y == point.Y)
