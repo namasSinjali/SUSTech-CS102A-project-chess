@@ -114,6 +114,9 @@ public class Board extends JPanel {
     public void movePiece(ChessboardPoint from, ChessboardPoint to){
         squares[to.X][to.Y].setIcon(squares[from.X][from.Y].removeIcon());
     }
+    public void removePiece(ChessboardPoint source) {
+        squares[source.X][source.Y].removeIcon();
+    }
 
     public void hint(ArrayList<ChessboardPoint> points){
         removeHint();

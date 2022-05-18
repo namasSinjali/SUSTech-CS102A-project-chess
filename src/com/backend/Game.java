@@ -3,6 +3,9 @@ package com.backend;
 import com.ChessColor;
 import com.ChessboardPoint;
 import com.backend.piece.*;
+import com.backend.special_moves.EnPassantMove;
+import com.backend.special_moves.PawnTwoStepMove;
+import com.backend.special_moves.SpecialMove;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +20,7 @@ public class Game {
     // should be initialized in your construct method.
     // by default, set the color to white.
     private ChessColor currentPlayer;
-
+    private Pawn enPassantTarget;
 
     public Game(){
         pieces = new Piece[8][8];
@@ -184,64 +187,88 @@ public class Game {
         if(chess == null) return new ArrayList<>();
 
         if(chess.getChessColor() != currentPlayer) return new ArrayList<>();
-        List<ChessboardPoint> rawCanMovePoints = chess.getCanMovePoints();
+        List<ChessboardPoint> canMovePoints = chess.getCanMovePoints();
 
-        List<ChessboardPoint> canMovePoints = new ArrayList<>();
-        for (ChessboardPoint candidateCoordinate:
-             rawCanMovePoints) {
-            if (!Utils.isKingCheck(getChessComponents(), candidateCoordinate, chess)){
-                canMovePoints.add(candidateCoordinate);
+        if(enPassantTarget != null && chess instanceof Pawn){
+            ChessboardPoint targetLocation = enPassantTarget.getLocation();
+            if(targetLocation.X == source.X && (source.Y - targetLocation.Y == -1 || source.Y - targetLocation.Y == 1)){
+                canMovePoints.add(new EnPassantMove(targetLocation.offset(-enPassantTarget.direction, 0), targetLocation));
             }
         }
 
-        int size = canMovePoints.size();
-        for(int i=0; i<size-1; i++){
-            ChessboardPoint a = canMovePoints.get(i);
-            int ax = a.X;
-            int ay = a.Y;
-            for(int j=i+1; j<size; j++){
-                ChessboardPoint b = canMovePoints.get(j);
-                int bx = b.X;
-                int by = b.Y;
-
-                if(bx < ax || (bx == ax && by < ay)) {
-                    canMovePoints.set(i, b);
-                    canMovePoints.set(j, a);
-
-                    a = b;
-                    ax = bx;
-                    ay = by;
-                }
-            }
-        }
+//        List<ChessboardPoint> canMovePoints = new ArrayList<>();
+//        for (ChessboardPoint candidateCoordinate:
+//             rawCanMovePoints) {
+//            if (!Utils.isKingCheck(getChessComponents(), candidateCoordinate, chess)){
+//                canMovePoints.add(candidateCoordinate);
+//            }
+//        }
+//
+//        int size = canMovePoints.size();
+//        for(int i=0; i<size-1; i++){
+//            ChessboardPoint a = canMovePoints.get(i);
+//            int ax = a.X;
+//            int ay = a.Y;
+//            for(int j=i+1; j<size; j++){
+//                ChessboardPoint b = canMovePoints.get(j);
+//                int bx = b.X;
+//                int by = b.Y;
+//
+//                if(bx < ax || (bx == ax && by < ay)) {
+//                    canMovePoints.set(i, b);
+//                    canMovePoints.set(j, a);
+//
+//                    a = b;
+//                    ax = bx;
+//                    ay = by;
+//                }
+//            }
+//        }
         return canMovePoints;
     }
 
-    public boolean moveChess(ChessboardPoint from, ChessboardPoint to){
+    public ChessboardPoint moveChess(ChessboardPoint from, ChessboardPoint to){
         Piece source = getChess(from);
         Piece target = getChess(to);
 
-        if(!contains(source.getCanMovePoints(), to))
-            return false;
-        System.out.println(Utils.candidateWillDeathPawn!=null?Utils.candidateWillDeathPawn:"null");
-        if (Utils.isChanceOfPawnSpecialMove && source instanceof Pawn){
-            pieces[Utils.candidateWillDeathPawn.X][Utils.candidateWillDeathPawn.Y] = null;
+        ChessboardPoint move = getMove(getCanMovePoints(from), to);
+        if(move == null) // invalid move
+            return null;
+//        System.out.println(Utils.candidateWillDeathPawn!=null?Utils.candidateWillDeathPawn:"null");
+//        if (Utils.isChanceOfPawnSpecialMove && source instanceof Pawn){
+//            pieces[Utils.candidateWillDeathPawn.X][Utils.candidateWillDeathPawn.Y] = null;
+//
+//        }
+        enPassantTarget = null; // reset en passant
 
-        }
+        // regular move
         source.setLocation(to);
         pieces[to.X][to.Y] = source;
         pieces[from.X][from.Y] = null;
 
+        /*   special moves   */
+        if(move instanceof SpecialMove){
+            if(move instanceof PawnTwoStepMove){
+
+                enPassantTarget = (Pawn) source;
+
+            } else if(move instanceof EnPassantMove){
+                EnPassantMove m = (EnPassantMove) move;
+                pieces[m.capturePawn.X][m.capturePawn.Y] = null;
+            }
+        }
+
+
         this.currentPlayer = (this.currentPlayer == ChessColor.BLACK)? ChessColor.WHITE : ChessColor.BLACK;
 
-        return true;
+        return move;
     }
 
-    private boolean contains(List<ChessboardPoint> points, ChessboardPoint point){
+    private ChessboardPoint getMove(List<ChessboardPoint> points, ChessboardPoint point){
         for( ChessboardPoint p : points){
             if (p.X == point.X && p.Y == point.Y)
-                return true;
+                return p;
         }
-        return false;
+        return null;
     }
 }

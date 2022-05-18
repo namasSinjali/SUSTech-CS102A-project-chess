@@ -1,6 +1,8 @@
 package com;
 
 import com.backend.Game;
+import com.backend.special_moves.EnPassantMove;
+import com.backend.special_moves.SpecialMove;
 import com.gui.Board;
 import com.gui.Sidebar;
 
@@ -48,8 +50,16 @@ public class Main {
     }
 
     public static void move(ChessboardPoint from, ChessboardPoint to) {
-        if(game.moveChess(from, to)){
-            board.movePiece(from, to);
+        ChessboardPoint move = game.moveChess(from, to);
+        if(move == null)
+            return;
+        board.movePiece(from, to);
+
+        if(move instanceof SpecialMove){
+            if(move instanceof EnPassantMove){
+                EnPassantMove m = (EnPassantMove) move;
+                board.removePiece(m.capturePawn);
+            }
         }
     }
 }
