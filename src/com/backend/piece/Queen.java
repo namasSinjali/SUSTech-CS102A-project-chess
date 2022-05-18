@@ -4,7 +4,6 @@ import com.ChessColor;
 import com.ChessboardPoint;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Queen extends Piece {
     public Queen(ChessboardPoint location, ChessColor chessColor){
@@ -17,7 +16,7 @@ public class Queen extends Piece {
     @Override
     ArrayList<ChessboardPoint> getCanMovePoints(Piece[][] board) {
         ArrayList<ChessboardPoint> lists = new ArrayList<>();
-        utils.scan(location, board, QUEEN_MOVES, lists);
+        Utils.scan(location, board, QUEEN_MOVES, lists);
 
         return lists;
     }

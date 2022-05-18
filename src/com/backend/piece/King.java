@@ -4,7 +4,6 @@ import com.ChessColor;
 import com.ChessboardPoint;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class King extends Piece {
     public King(ChessboardPoint location, ChessColor chessColor){
@@ -19,7 +18,7 @@ public class King extends Piece {
         ArrayList<ChessboardPoint> lists = new ArrayList<>();
 
         for(int[] move : MOVES){
-            utils.add(location, board, location.offset(move[0], move[1]), lists);
+            Utils.add(location, board, location.offset(move[0], move[1]), lists);
         }
 
         return lists;

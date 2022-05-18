@@ -3,7 +3,6 @@ package com.backend.piece;
 import com.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Rook extends Piece {
     public Rook(ChessboardPoint location, ChessColor chessColor){
@@ -16,7 +15,7 @@ public class Rook extends Piece {
     @Override
     ArrayList<ChessboardPoint> getCanMovePoints(Piece[][] board) {
         ArrayList<ChessboardPoint> lists = new ArrayList<>();
-        utils.scan(location, board, MOVES, lists);
+        Utils.scan(location, board, MOVES, lists);
 
         return lists;
     }

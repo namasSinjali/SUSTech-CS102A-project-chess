@@ -4,7 +4,6 @@ import com.ChessColor;
 import com.ChessboardPoint;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Bishop extends Piece {
     public Bishop(ChessboardPoint location, ChessColor chessColor){
@@ -17,7 +16,7 @@ public class Bishop extends Piece {
     @Override
     ArrayList<ChessboardPoint> getCanMovePoints(Piece[][] board) {
         ArrayList<ChessboardPoint> lists = new ArrayList<>();
-        utils.scan(location, board, MOVES, lists);
+        Utils.scan(location, board, MOVES, lists);
 
         return lists;
     }

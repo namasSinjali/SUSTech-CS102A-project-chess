@@ -17,6 +17,8 @@ public class Game {
     // should be initialized in your construct method.
     // by default, set the color to white.
     private ChessColor currentPlayer;
+
+
     public Game(){
         pieces = new Piece[8][8];
         Piece.setChessBoard(this.pieces);
@@ -187,7 +189,7 @@ public class Game {
         List<ChessboardPoint> canMovePoints = new ArrayList<>();
         for (ChessboardPoint candidateCoordinate:
              rawCanMovePoints) {
-            if (!utils.isKingCheck(getChessComponents(), candidateCoordinate, chess)){
+            if (!Utils.isKingCheck(getChessComponents(), candidateCoordinate, chess)){
                 canMovePoints.add(candidateCoordinate);
             }
         }
@@ -221,7 +223,11 @@ public class Game {
 
         if(!contains(source.getCanMovePoints(), to))
             return false;
+        System.out.println(Utils.candidateWillDeathPawn!=null?Utils.candidateWillDeathPawn:"null");
+        if (Utils.isChanceOfPawnSpecialMove && source instanceof Pawn){
+            pieces[Utils.candidateWillDeathPawn.X][Utils.candidateWillDeathPawn.Y] = null;
 
+        }
         source.setLocation(to);
         pieces[to.X][to.Y] = source;
         pieces[from.X][from.Y] = null;
