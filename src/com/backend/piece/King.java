@@ -2,6 +2,7 @@ package com.backend.piece;
 
 import com.ChessColor;
 import com.ChessboardPoint;
+import com.backend.special_moves.CastleMove;
 
 import java.util.ArrayList;
 
@@ -33,8 +34,13 @@ public class King extends Piece {
         if (!hasMoved) {
             for (int castlingTarget :
                     direction) {
-                if (board[location.X][castlingTarget] == null) {
-                    lists.add(new ChessboardPoint(location.X,castlingTarget));
+                if (board[location.X][castlingTarget] == null&&
+                        board[location.X][castlingTarget-1]==null&&
+                        board[location.X][castlingTarget==2?castlingTarget+1:castlingTarget-1]==null&&
+                        !Utils.isKingCheck(board,new ChessboardPoint(location.X,castlingTarget==2?castlingTarget+1:castlingTarget-1),this)&&
+                        board[location.X][castlingTarget==2?0:7] instanceof Rook &&
+                        !((Rook) board[location.X][castlingTarget==2?0:7]).getHasMoved()) {
+                    lists.add(new CastleMove(location.X,castlingTarget));
                 }
             }
         }

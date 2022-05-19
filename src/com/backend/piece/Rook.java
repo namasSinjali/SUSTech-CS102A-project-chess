@@ -13,7 +13,9 @@ public class Rook extends Piece {
         hasMoved = false;
 
     }
-
+    boolean getHasMoved() {
+        return hasMoved;
+    }
     @Override
     public void setLocation(ChessboardPoint location) {
         hasMoved = true;
