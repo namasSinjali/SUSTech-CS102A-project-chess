@@ -187,43 +187,23 @@ public class Game {
         if(chess == null) return new ArrayList<>();
 
         if(chess.getChessColor() != currentPlayer) return new ArrayList<>();
-        List<ChessboardPoint> canMovePoints = chess.getCanMovePoints();
+        List<ChessboardPoint> rawCanMovePoints = chess.getCanMovePoints();
 
         if(enPassantTarget != null && chess instanceof Pawn){
             ChessboardPoint targetLocation = enPassantTarget.getLocation();
             if(targetLocation.X == source.X && (source.Y - targetLocation.Y == -1 || source.Y - targetLocation.Y == 1)){
-                canMovePoints.add(new EnPassantMove(targetLocation.offset(-enPassantTarget.direction, 0), targetLocation));
+                rawCanMovePoints.add(new EnPassantMove(targetLocation.offset(-enPassantTarget.direction, 0), targetLocation));
             }
         }
 
-//        List<ChessboardPoint> canMovePoints = new ArrayList<>();
-//        for (ChessboardPoint candidateCoordinate:
-//             rawCanMovePoints) {
-//            if (!Utils.isKingCheck(getChessComponents(), candidateCoordinate, chess)){
-//                canMovePoints.add(candidateCoordinate);
-//            }
-//        }
-//
-//        int size = canMovePoints.size();
-//        for(int i=0; i<size-1; i++){
-//            ChessboardPoint a = canMovePoints.get(i);
-//            int ax = a.X;
-//            int ay = a.Y;
-//            for(int j=i+1; j<size; j++){
-//                ChessboardPoint b = canMovePoints.get(j);
-//                int bx = b.X;
-//                int by = b.Y;
-//
-//                if(bx < ax || (bx == ax && by < ay)) {
-//                    canMovePoints.set(i, b);
-//                    canMovePoints.set(j, a);
-//
-//                    a = b;
-//                    ax = bx;
-//                    ay = by;
-//                }
-//            }
-//        }
+        List<ChessboardPoint> canMovePoints = new ArrayList<>();
+        for (ChessboardPoint candidateCoordinate:
+             rawCanMovePoints) {
+            if (!Utils.isKingCheck(getChessComponents(), candidateCoordinate, chess)){
+                canMovePoints.add(candidateCoordinate);
+            }
+        }
+
         return canMovePoints;
     }
 
