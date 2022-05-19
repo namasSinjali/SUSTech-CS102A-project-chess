@@ -2,8 +2,8 @@ package com.backend.piece;
 
 import com.ChessColor;
 import com.ChessboardPoint;
-import com.backend.special_moves.EnPassantMove;
 import com.backend.special_moves.PawnTwoStepMove;
+import com.backend.special_moves.PromotionMove;
 
 import java.util.ArrayList;
 
@@ -35,7 +35,11 @@ private final static int[][] WHITE_PAWN_MOVES = {
 
         point = this.location.offset(direction, 0);
         if(point != null && board[point.X][point.Y] == null){
-            points.add(point);
+            if (point.X==7||point.X==0){
+                points.add(new PromotionMove(point.X,point.Y));
+            }else {
+                points.add(point);
+            }
 
             if(this.location.X == direction || this.location.X == direction + 7){
                 point = this.location.offset(direction+direction, 0);
@@ -54,7 +58,6 @@ private final static int[][] WHITE_PAWN_MOVES = {
                 points.add(point);
             }
         }
-
         //en passant move will be added by Game getCanMovePoints() method class
 
         return points;

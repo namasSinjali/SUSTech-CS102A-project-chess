@@ -3,10 +3,7 @@ package com.backend;
 import com.ChessColor;
 import com.ChessboardPoint;
 import com.backend.piece.*;
-import com.backend.special_moves.CastleMove;
-import com.backend.special_moves.EnPassantMove;
-import com.backend.special_moves.PawnTwoStepMove;
-import com.backend.special_moves.SpecialMove;
+import com.backend.special_moves.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +90,10 @@ public class Game {
     public ChessColor getCurrentPlayer() {
         return this.currentPlayer;
     }
-
+    public ChessColor getOpponentPlayer(){
+        if (getCurrentPlayer()==ChessColor.BLACK) return ChessColor.WHITE;
+        return ChessColor.BLACK;
+    }
     public String getChessboardGraph() {
         StringBuilder graph = new StringBuilder();
         for (int i = 0; i < 8; i++) {
@@ -234,12 +234,12 @@ public class Game {
             } else if (move instanceof EnPassantMove) {
                 EnPassantMove m = (EnPassantMove) move;
                 pieces[m.capturePawn.X][m.capturePawn.Y] = null;
-            }
-        }
-        if (move instanceof SpecialMove) {
-            if (move instanceof CastleMove) {
+            }else if (move instanceof CastleMove) {
                 pieces[move.X][move.Y == 2 ? 3 : 5] = pieces[move.X][move.Y == 2 ? 0 : 7];
+                pieces[move.X][move.Y == 2 ? 0 : 7].setLocation(new ChessboardPoint(move.X, move.Y == 2 ? 3 : 5));
                 pieces[move.X][move.Y == 2 ? 0 : 7] = null;
+            }else if(move instanceof PromotionMove){
+                pieces[to.X][to.Y] = new Queen(to,currentPlayer);
             }
         }
 
