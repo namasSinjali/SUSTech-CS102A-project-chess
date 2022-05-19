@@ -3,7 +3,7 @@ package com.backend.piece;
 import com.ChessColor;
 import com.ChessboardPoint;
 import com.backend.special_moves.PawnTwoStepMove;
-import com.backend.special_moves.PromotionMove;
+import com.backend.special_moves.PromotionPawnMove;
 
 import java.util.ArrayList;
 
@@ -36,7 +36,7 @@ private final static int[][] WHITE_PAWN_MOVES = {
         point = this.location.offset(direction, 0);
         if(point != null && board[point.X][point.Y] == null){
             if (point.X==7||point.X==0){
-                points.add(new PromotionMove(point.X,point.Y));
+                points.add(new PromotionPawnMove(point.X,point.Y));
             }else {
                 points.add(point);
             }

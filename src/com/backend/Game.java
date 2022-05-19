@@ -238,7 +238,7 @@ public class Game {
                 pieces[move.X][move.Y == 2 ? 3 : 5] = pieces[move.X][move.Y == 2 ? 0 : 7];
                 pieces[move.X][move.Y == 2 ? 0 : 7].setLocation(new ChessboardPoint(move.X, move.Y == 2 ? 3 : 5));
                 pieces[move.X][move.Y == 2 ? 0 : 7] = null;
-            }else if(move instanceof PromotionMove){
+            }else if(move instanceof PromotionPawnMove){
                 pieces[to.X][to.Y] = new Queen(to,currentPlayer);
             }
         }

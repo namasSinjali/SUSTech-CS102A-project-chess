@@ -4,7 +4,7 @@ import com.backend.Game;
 import com.backend.piece.Queen;
 import com.backend.special_moves.CastleMove;
 import com.backend.special_moves.EnPassantMove;
-import com.backend.special_moves.PromotionMove;
+import com.backend.special_moves.PromotionPawnMove;
 import com.backend.special_moves.SpecialMove;
 import com.gui.Board;
 import com.gui.Sidebar;
@@ -65,7 +65,7 @@ public class Main {
             }else if (move instanceof CastleMove){
                 board.movePiece(new ChessboardPoint(move.X,move.Y==2?0:7),new ChessboardPoint(move.X,move.Y==2?3:5));
                 board.removePiece(new ChessboardPoint(move.X,move.Y==2?0:7));
-            }else if (move instanceof PromotionMove){
+            }else if (move instanceof PromotionPawnMove){
                 board.removePiece(to);
                 board.addPiece(new Queen(to,game.getOpponentPlayer()));
             }
