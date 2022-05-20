@@ -11,13 +11,18 @@ import com.gui.Sidebar;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 
 public class Main {
     private static Board board = new Board();
     private static Game game = new Game();
 
-    public static void main(String[] args) {
+    private static String loadFromFile = "././tempChessBoard.txt";
+    public static void main(String[] args)  {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -32,7 +37,7 @@ public class Main {
 
 //        com.backend.ConcreteChessGame game = new com.backend.ConcreteChessGame();
 
-        ArrayList<String> chessboard = new ArrayList<>();
+        /*ArrayList<String> chessboard = new ArrayList<>();
         chessboard.add("R_BQK___");
         chessboard.add("PPP__PP_");
         chessboard.add("__NPP_n_");
@@ -41,18 +46,49 @@ public class Main {
         chessboard.add("__p_____");
         chessboard.add("pp___pp_");
         chessboard.add("rnb_kb_R");
-        chessboard.add("w");
+        chessboard.add("w");*/
 
-        game.loadChessGame(chessboard);
+        game.loadChessGame(NEW_GAME_CHESSBOARD());
         board.loadBoard(game.getChessComponents());
-    }
+        List<String> loadGameFile;
+        try {
+            loadGameFile = getListCoordinateFromFIle();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
+        if (!loadGameFile.isEmpty()){
+            for (String coordinate:
+                 loadGameFile) {
+
+                move(new ChessboardPoint(Character.getNumericValue(coordinate.charAt(1)),Character.getNumericValue(coordinate.charAt(3))),new ChessboardPoint(Character.getNumericValue(coordinate.charAt(6)),Character.getNumericValue(coordinate.charAt(8))));
+            }
+        }
+
+    }
+    private final static List<String> NEW_GAME_CHESSBOARD(){
+        List<String> chessboard = new ArrayList<>();
+        chessboard.add("RNBQKBNR");
+        chessboard.add("PPPPPPPP");
+        chessboard.add("________");
+        chessboard.add("________");
+        chessboard.add("________");
+        chessboard.add("________");
+        chessboard.add("pppppppp");
+        chessboard.add("rnbqkbnr");
+        chessboard.add("w");
+        return  Collections.unmodifiableList(chessboard);
+    }
     public static void hint(ChessboardPoint point) {
         ArrayList<ChessboardPoint> points = (ArrayList<ChessboardPoint>) game.getCanMovePoints(point);
         board.hint(points);
     }
+    public static List<String> LoadGameSelectedGame(String filename){
+        return null;
+    }
 
     public static void move(ChessboardPoint from, ChessboardPoint to) {
+
         ChessboardPoint move = game.moveChess(from, to);
         if(move == null)
             return;
@@ -70,6 +106,30 @@ public class Main {
                 board.addPiece(new Queen(to,game.getOpponentPlayer()));
             }
         }
+        writeFile(from,to);
 
+    }
+    public static List<String> getListCoordinateFromFIle() throws IOException {
+        List<String> chessboard = Files.readAllLines(Paths.get(loadFromFile));
+        return chessboard;
+    }
+    public static void writeFile(ChessboardPoint from, ChessboardPoint to){
+        try {
+
+            List<String> chessboard = getListCoordinateFromFIle();
+            FileWriter writer = new FileWriter(loadFromFile);
+            if (!chessboard.isEmpty()){
+                for (String coordinate:
+                        chessboard) {
+                    writer.write(coordinate);
+                    writer.write("\n");
+                }
+            }
+            writer.write(from.toString());
+            writer.write(to.toString());
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
