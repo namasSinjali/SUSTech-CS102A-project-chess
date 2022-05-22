@@ -1,6 +1,7 @@
 package com.gui;
 
 import javax.swing.*;
+import java.awt.*;
 
 public enum Icons {
     WHITE_PAWN("white_pawn.png"),
@@ -17,12 +18,28 @@ public enum Icons {
     BLACK_QUEEN("black_queen.png");
 
     private final ImageIcon icon;
+    private ImageIcon iconResized;
     private static final String path = "src/com/gui/images/";
     Icons(String location){
         this.icon = new ImageIcon(path + location);
+        this.iconResized = this.icon;
     }
 
     ImageIcon getIcon(){
         return icon;
+    }
+    private ImageIcon getOriginalIcon(){
+        return icon;
+    }
+    private void setIcon(ImageIcon icon){
+        this.iconResized = icon;
+    }
+    static void resizeIcons(int width) {
+        for(Icons piece : Icons.values()){
+            Image image = piece.getOriginalIcon().getImage();
+            Image newImg = image.getScaledInstance(width, width,  java.awt.Image.SCALE_SMOOTH);
+
+            piece.setIcon(new ImageIcon(newImg));
+        }
     }
 }

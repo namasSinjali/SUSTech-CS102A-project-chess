@@ -19,15 +19,11 @@ public class Board extends JPanel {
     public Board() {
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        this.setPreferredSize(new Dimension(700, 700));
+        this.setMinimumSize(new Dimension(500, 500));
         this.setOpaque(true);
+        this.setAlignmentY(CENTER_ALIGNMENT);
 
-        JPanel grid = new JPanel(){
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-            }
-        };
+        JPanel grid = new JPanel();
         grid.setLayout(new GridLayout(8, 8));
         for (int i = 0; i < 8; i++) {
             for (char j = 0; j < 8; j++) {
@@ -59,34 +55,48 @@ public class Board extends JPanel {
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 0;
-        c.weightx = .05;
-        c.weighty = .95;
+        c.weightx = .07;
+        c.weighty = .93;
         this.add(rankLabels, c);
 
         c.gridx = 1;
         c.gridy = 0;
-        c.weightx = .95;
-        c.weighty = .95;
+        c.weightx = .93;
+        c.weighty = .93;
         this.add(grid, c);
 
         c.gridx = 1;
         c.gridy = 1;
-        c.weightx = .95;
-        c.weighty = .05;
+        c.weightx = .93;
+        c.weighty = .07;
         this.add(fileLabels, c);
+    }
 
-//        ImageIcon icon = com.gui.Icons.WHITE_ROOK.getIcon();
-//        squares[0][0].setIcon(icon);
-//        squares[0][0].switchHighlight();
-//        squares[0][7].setIcon(icon);
-//
-//        squares[0][1].hint(true);
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        int width = getParent().getWidth();
+        int height = getParent().getHeight();
+
+        int side = (width < height) ? width : height;
+
+        this.setPreferredSize(new Dimension(side, side));
+//        this.setLocation((width-side)/2, (height-side)/2);
     }
 
     public void loadBoard(Piece[][] chessBoard){
+        emptyBoard();
         for(int i=0; i<8; i++){
             for(int j=0; j<8; j++){
                 addPiece(chessBoard[i][j]);
+            }
+        }
+    }
+    public void emptyBoard(){
+        for(Square[] row : squares){
+            for(Square s : row){
+                s.removeIcon();
             }
         }
     }

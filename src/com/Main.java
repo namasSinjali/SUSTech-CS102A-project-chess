@@ -3,9 +3,9 @@ package com;
 import com.backend.Game;
 import com.gui.Board;
 import com.gui.Sidebar;
+import com.gui.WindowFrame;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.*;
 
 public class Main {
@@ -13,19 +13,18 @@ public class Main {
     private static Game game = new Game();
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setLayout(new BorderLayout());
+//        JFrame frame = new JFrame();
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        frame.setLayout(new BorderLayout());
+//
+//        JPanel sidebar = new Sidebar();
+//
+//        frame.add(board, BorderLayout.CENTER);
+//        frame.add(sidebar, BorderLayout.EAST);
+//        frame.setVisible(true);
 
-//        com.gui.Board board = new com.gui.Board();
-        JPanel sidebar = new Sidebar();
-
-        frame.add(board, BorderLayout.CENTER);
-        frame.add(sidebar, BorderLayout.EAST);
-        frame.setVisible(true);
-
-//        com.backend.ConcreteChessGame game = new com.backend.ConcreteChessGame();
+        WindowFrame window = new WindowFrame();
 
         ArrayList<String> chessboard = new ArrayList<>();
         chessboard.add("R_BQK___");
@@ -40,6 +39,26 @@ public class Main {
 
         game.loadChessGame(chessboard);
         board.loadBoard(game.getChessComponents());
+    }
+
+    public static void newGame(){
+        game = new Game();
+        ArrayList<String> chessboard = new ArrayList<>();
+        chessboard.add("RNBKQBNR");
+        chessboard.add("PPPPPPPP");
+        chessboard.add("________");
+        chessboard.add("________");
+        chessboard.add("________");
+        chessboard.add("________");
+        chessboard.add("pppppppp");
+        chessboard.add("rnbkqbnr");
+        chessboard.add("w");
+        game.loadChessGame(chessboard);
+        board.loadBoard(game.getChessComponents());
+    }
+
+    public static Board getBoard(){
+        return board;
     }
 
     public static void hint(ChessboardPoint point) {
