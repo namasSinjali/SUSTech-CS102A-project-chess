@@ -22,6 +22,8 @@ public class Main {
     private static Board board = new Board();
     private static Game game = new Game();
 
+    private static String loadFromFile = "././tempChessBoard.txt";
+
     public static void main(String[] args) {
 //        JFrame frame = new JFrame();
 //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,25 +49,6 @@ public class Main {
         chessboard.add("rnb_kb_R");
         chessboard.add("w");*/
 
-        game.loadChessGame(NEW_GAME_CHESSBOARD());
-        game.loadChessGame(chessboard);
-        board.loadBoard(game.getChessComponents());
-    }
-
-    public static void newGame(){
-        game = new Game();
-        ArrayList<String> chessboard = new ArrayList<>();
-        chessboard.add("RNBKQBNR");
-        chessboard.add("PPPPPPPP");
-        chessboard.add("________");
-        chessboard.add("________");
-        chessboard.add("________");
-        chessboard.add("________");
-        chessboard.add("pppppppp");
-        chessboard.add("rnbkqbnr");
-        chessboard.add("w");
-        game.loadChessGame(chessboard);
-        board.loadBoard(game.getChessComponents());
         List<String> loadGameFile;
         try {
             loadGameFile = getListCoordinateFromFIle();
@@ -75,12 +58,18 @@ public class Main {
 
         if (!loadGameFile.isEmpty()){
             for (String coordinate:
-                 loadGameFile) {
+                    loadGameFile) {
 
                 move(new ChessboardPoint(Character.getNumericValue(coordinate.charAt(1)),Character.getNumericValue(coordinate.charAt(3))),new ChessboardPoint(Character.getNumericValue(coordinate.charAt(6)),Character.getNumericValue(coordinate.charAt(8))));
             }
         }
+    }
 
+    public static void newGame(){
+        game = new Game();
+
+        game.loadChessGame(NEW_GAME_CHESSBOARD());
+        board.loadBoard(game.getChessComponents());
     }
     private final static List<String> NEW_GAME_CHESSBOARD(){
         List<String> chessboard = new ArrayList<>();
