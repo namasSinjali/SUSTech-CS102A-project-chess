@@ -2,43 +2,50 @@ package com.backend.piece;
 
 import com.ChessColor;
 import com.ChessboardPoint;
+import com.backend.special_moves.EnPassantMove;
+import com.backend.special_moves.SpecialMove;
 
 import java.util.List;
 
 public class Utils {
     static void scan(ChessboardPoint source, Piece[][] board, int[][] directions, List storeLocation) {
+
         for (int[] direction : directions) {
             int dx = 0;
             int dy = 0;
+
+
+
             do {
                 dx += direction[0];
                 dy += direction[1];
+
 
             } while (Utils.add(source, board, source.offset(dx, dy), storeLocation));
         }
 
     }
 
-    public static boolean isChanceOfPawnSpecialMove = false;
-    static ChessboardPoint[] whoCanDoPawnSpecialMove = new ChessboardPoint[2];
-    static ChessboardPoint candidateTargetCoordinate = null;
-    public static ChessboardPoint candidateWillDeathPawn = null;
-    public static void setWhoCanDoPawnSpecialMove(ChessboardPoint first,
-                                           ChessboardPoint second,
-                                           ChessboardPoint candidateTargetCoordinateP,
-                                           ChessboardPoint candidateWillDeath) {
-        whoCanDoPawnSpecialMove[0] = first;
-        whoCanDoPawnSpecialMove[1] = second;
-        candidateTargetCoordinate = candidateTargetCoordinateP;
-        isChanceOfPawnSpecialMove = true;
-        candidateWillDeathPawn = candidateWillDeath;
-    }
-    public static void setWhoCanDoPawnSpecialMoveDefault() {
-        whoCanDoPawnSpecialMove = new ChessboardPoint[2];
-        isChanceOfPawnSpecialMove = false;
-        candidateTargetCoordinate= null;
-        candidateWillDeathPawn = null;
-    }
+//    public static boolean isChanceOfPawnSpecialMove = false;
+//    static ChessboardPoint[] whoCanDoPawnSpecialMove = new ChessboardPoint[2];
+//    static ChessboardPoint candidateTargetCoordinate = null;
+//    public static ChessboardPoint candidateWillDeathPawn = null;
+//    public static void setWhoCanDoPawnSpecialMove(ChessboardPoint first,
+//                                           ChessboardPoint second,
+//                                           ChessboardPoint candidateTargetCoordinateP,
+//                                           ChessboardPoint candidateWillDeath) {
+//        whoCanDoPawnSpecialMove[0] = first;
+//        whoCanDoPawnSpecialMove[1] = second;
+//        candidateTargetCoordinate = candidateTargetCoordinateP;
+//        isChanceOfPawnSpecialMove = true;
+//        candidateWillDeathPawn = candidateWillDeath;
+//    }
+//    public static void setWhoCanDoPawnSpecialMoveDefault() {
+//        whoCanDoPawnSpecialMove = new ChessboardPoint[2];
+//        isChanceOfPawnSpecialMove = false;
+//        candidateTargetCoordinate= null;
+//        candidateWillDeathPawn = null;
+//    }
 
     private static final int[][] KING_CHECK_MOVES = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1}};
     private static final int[][] BLACK_PAWN_CHECK_MOVES = {{1, 1}, {1, -1}};
@@ -48,8 +55,7 @@ public class Utils {
     public static boolean isKingCheck(final Piece[][] board, final ChessboardPoint targetedPosition, final Piece selectedPiece) {
         Piece[][] testBoard = new Piece[8][8];
         for (int i = 0; i < board.length; i++)
-            for (int j = 0; j < board[i].length; j++)
-                testBoard[i][j] = board[i][j];
+            System.arraycopy(board[i], 0, testBoard[i], 0, board[i].length);
         ChessboardPoint kingPosition = null;
         if (selectedPiece instanceof King) {
             testBoard[targetedPosition.X][targetedPosition.Y] = selectedPiece;
@@ -58,7 +64,12 @@ public class Utils {
         } else {
             testBoard[targetedPosition.X][targetedPosition.Y] = selectedPiece;
             testBoard[selectedPiece.location.X][selectedPiece.location.Y] = null;
-
+            if(targetedPosition instanceof SpecialMove){
+                 if(targetedPosition instanceof EnPassantMove){
+                    EnPassantMove m = (EnPassantMove) targetedPosition;
+                    testBoard[m.capturePawn.X][m.capturePawn.Y] = null;
+                }
+            }
             outer:
             for (Piece[] row :
                     testBoard) {
@@ -76,6 +87,7 @@ public class Utils {
         if (selectedPiece.chessColor == ChessColor.BLACK) {
             for (int[] candidateCoordinate :
                     BLACK_PAWN_CHECK_MOVES) {
+                assert kingPosition != null;
                 ChessboardPoint candidatePoint = new ChessboardPoint(kingPosition.X, kingPosition.Y).offset(candidateCoordinate[0], candidateCoordinate[1]);
 
                 if (candidatePoint != null && testBoard[candidatePoint.X][candidatePoint.Y] != null &&
@@ -85,6 +97,7 @@ public class Utils {
         } else {
             for (int[] candidateCoordinate :
                     WHITE_PAWN_CHECK_MOVES) {
+                assert kingPosition != null;
                 ChessboardPoint candidatePoint = new ChessboardPoint(kingPosition.X, kingPosition.Y).offset(candidateCoordinate[0], candidateCoordinate[1]);
 
                 if (candidatePoint != null && testBoard[candidatePoint.X][candidatePoint.Y] != null &&

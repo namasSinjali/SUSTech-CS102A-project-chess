@@ -3,6 +3,7 @@ package com.backend;
 import com.ChessColor;
 import com.ChessboardPoint;
 import com.backend.piece.*;
+import com.backend.special_moves.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,9 @@ public class Game {
     // should be initialized in your construct method.
     // by default, set the color to white.
     private ChessColor currentPlayer;
+    private Pawn enPassantTarget;
 
-
-    public Game(){
+    public Game() {
         pieces = new Piece[8][8];
         Piece.setChessBoard(this.pieces);
     }
@@ -29,12 +30,12 @@ public class Game {
     }
 
     public void loadChessGame(List<String> chessboard) {
-        for(int i=0; i<8; i++){
+        for (int i = 0; i < 8; i++) {
             String row = chessboard.get(i);
-            for(int j=0; j<8; j++){
+            for (int j = 0; j < 8; j++) {
                 Piece component;
 
-                switch(row.charAt(j)){
+                switch (row.charAt(j)) {
                     case 'R':
                         component = new Rook(new ChessboardPoint(i, j), ChessColor.BLACK);
                         break;
@@ -80,7 +81,7 @@ public class Game {
             }
         }
 
-        if(chessboard.get(8).equals("w"))
+        if (chessboard.get(8).equals("w"))
             currentPlayer = ChessColor.WHITE;
         else
             currentPlayer = ChessColor.BLACK;
@@ -89,37 +90,40 @@ public class Game {
     public ChessColor getCurrentPlayer() {
         return this.currentPlayer;
     }
-
+    public ChessColor getOpponentPlayer(){
+        if (getCurrentPlayer()==ChessColor.BLACK) return ChessColor.WHITE;
+        return ChessColor.BLACK;
+    }
     public String getChessboardGraph() {
         StringBuilder graph = new StringBuilder();
-        for(int i=0; i<8; i++){
-            for(int j=0; j<8; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 graph.append(pieces[i][j].toString());
             }
             graph.append('\n');
         }
-        graph.deleteCharAt(graph.length()-1);
+        graph.deleteCharAt(graph.length() - 1);
         return graph.toString();
     }
 
-    public String getCapturedChess(ChessColor player){
-        int k=1, q=1, r=2, b=2, n=2, p=8;
+    public String getCapturedChess(ChessColor player) {
+        int k = 1, q = 1, r = 2, b = 2, n = 2, p = 8;
 
-        for(Piece[] row : pieces){
-            for(Piece component : row){
-                if(component.getChessColor() != player) continue;
+        for (Piece[] row : pieces) {
+            for (Piece component : row) {
+                if (component.getChessColor() != player) continue;
 
-                if(component instanceof Pawn)
+                if (component instanceof Pawn)
                     p--;
-                else if(component instanceof Rook)
+                else if (component instanceof Rook)
                     r--;
-                else if(component instanceof Bishop)
+                else if (component instanceof Bishop)
                     b--;
-                else if(component instanceof Knight)
+                else if (component instanceof Knight)
                     n--;
-                else if(component instanceof Queen)
+                else if (component instanceof Queen)
                     q--;
-                else if(component instanceof King)
+                else if (component instanceof King)
                     k--;
             }
         }
@@ -127,42 +131,42 @@ public class Game {
         StringBuilder capturedString = new StringBuilder();
         String c = (player == ChessColor.BLACK) ? "KQRBNP" : "kqrbnp";
 
-        if(k != 0)
+        if (k != 0)
             capturedString
                     .append(c.charAt(0))
                     .append(' ')
                     .append(k)
                     .append('\n');
 
-        if(q != 0)
+        if (q != 0)
             capturedString
                     .append(c.charAt(1))
                     .append(' ')
                     .append(q)
                     .append('\n');
 
-        if(r != 0)
+        if (r != 0)
             capturedString
                     .append(c.charAt(2))
                     .append(' ')
                     .append(r)
                     .append('\n');
 
-        if(b != 0)
+        if (b != 0)
             capturedString
                     .append(c.charAt(3))
                     .append(' ')
                     .append(b)
                     .append('\n');
 
-        if(n != 0)
+        if (n != 0)
             capturedString
                     .append(c.charAt(4))
                     .append(' ')
                     .append(n)
                     .append('\n');
 
-        if(p != 0)
+        if (p != 0)
             capturedString
                     .append(c.charAt(5))
                     .append(' ')
@@ -175,73 +179,93 @@ public class Game {
     public Piece getChess(int x, int y) {
         return pieces[x][y];
     }
-    public Piece getChess(ChessboardPoint source){
+
+    public Piece getChess(ChessboardPoint source) {
         return pieces[source.X][source.Y];
     }
 
     public List<ChessboardPoint> getCanMovePoints(ChessboardPoint source) {
         Piece chess = getChess(source);
-        if(chess == null) return new ArrayList<>();
+        if (chess == null) return new ArrayList<>();
 
-        if(chess.getChessColor() != currentPlayer) return new ArrayList<>();
+        if (chess.getChessColor() != currentPlayer) return new ArrayList<>();
         List<ChessboardPoint> rawCanMovePoints = chess.getCanMovePoints();
 
+        if (enPassantTarget != null && chess instanceof Pawn) {
+            ChessboardPoint targetLocation = enPassantTarget.getLocation();
+            if (targetLocation.X == source.X && (source.Y - targetLocation.Y == -1 || source.Y - targetLocation.Y == 1)) {
+                rawCanMovePoints.add(new EnPassantMove(targetLocation.offset(-enPassantTarget.direction, 0), targetLocation));
+            }
+        }
+
+
         List<ChessboardPoint> canMovePoints = new ArrayList<>();
-        for (ChessboardPoint candidateCoordinate:
-             rawCanMovePoints) {
-            if (!Utils.isKingCheck(getChessComponents(), candidateCoordinate, chess)){
+        for (ChessboardPoint candidateCoordinate :
+                rawCanMovePoints) {
+            if (!Utils.isKingCheck(getChessComponents(), candidateCoordinate, chess)) {
                 canMovePoints.add(candidateCoordinate);
             }
         }
 
-        int size = canMovePoints.size();
-        for(int i=0; i<size-1; i++){
-            ChessboardPoint a = canMovePoints.get(i);
-            int ax = a.X;
-            int ay = a.Y;
-            for(int j=i+1; j<size; j++){
-                ChessboardPoint b = canMovePoints.get(j);
-                int bx = b.X;
-                int by = b.Y;
-
-                if(bx < ax || (bx == ax && by < ay)) {
-                    canMovePoints.set(i, b);
-                    canMovePoints.set(j, a);
-
-                    a = b;
-                    ax = bx;
-                    ay = by;
-                }
-            }
-        }
         return canMovePoints;
     }
 
-    public boolean moveChess(ChessboardPoint from, ChessboardPoint to){
+    public ChessboardPoint moveChess(ChessboardPoint from, ChessboardPoint to) {
         Piece source = getChess(from);
         Piece target = getChess(to);
 
-        if(!contains(source.getCanMovePoints(), to))
-            return false;
-        System.out.println(Utils.candidateWillDeathPawn!=null?Utils.candidateWillDeathPawn:"null");
-        if (Utils.isChanceOfPawnSpecialMove && source instanceof Pawn){
-            pieces[Utils.candidateWillDeathPawn.X][Utils.candidateWillDeathPawn.Y] = null;
+        ChessboardPoint move = getMove(getCanMovePoints(from), to);
+        if (move == null) // invalid move
+            return null;
 
-        }
+        enPassantTarget = null; // reset en passant
+
+        // regular move
         source.setLocation(to);
         pieces[to.X][to.Y] = source;
         pieces[from.X][from.Y] = null;
 
-        this.currentPlayer = (this.currentPlayer == ChessColor.BLACK)? ChessColor.WHITE : ChessColor.BLACK;
+        /*   special moves   */
+        if (move instanceof SpecialMove) {
+            if (move instanceof PawnTwoStepMove) {
 
-        return true;
+                enPassantTarget = (Pawn) source;
+
+            } else if (move instanceof EnPassantMove) {
+                EnPassantMove m = (EnPassantMove) move;
+                pieces[m.capturePawn.X][m.capturePawn.Y] = null;
+            }else if (move instanceof CastleMove) {
+                pieces[move.X][move.Y == 2 ? 3 : 5] = pieces[move.X][move.Y == 2 ? 0 : 7];
+                pieces[move.X][move.Y == 2 ? 0 : 7].setLocation(new ChessboardPoint(move.X, move.Y == 2 ? 3 : 5));
+                pieces[move.X][move.Y == 2 ? 0 : 7] = null;
+            }else if(move instanceof PromotionPawnMove){
+                pieces[to.X][to.Y] = new Queen(to,currentPlayer);
+            }
+        }
+
+
+        this.currentPlayer = (this.currentPlayer == ChessColor.BLACK) ? ChessColor.WHITE : ChessColor.BLACK;
+
+        return move;
     }
 
-    private boolean contains(List<ChessboardPoint> points, ChessboardPoint point){
-        for( ChessboardPoint p : points){
-            if (p.X == point.X && p.Y == point.Y)
-                return true;
+    public boolean isCheckMate() {
+        for (Piece[] components : pieces) {
+            for (Piece component : components) {
+                if (component!=null&&component.getChessColor() == getCurrentPlayer() && getCanMovePoints(component.getLocation()).isEmpty()) {
+                    return true;
+                }
+            }
+
         }
         return false;
+    }
+
+    private ChessboardPoint getMove(List<ChessboardPoint> points, ChessboardPoint point) {
+        for (ChessboardPoint p : points) {
+            if (p.X == point.X && p.Y == point.Y)
+                return p;
+        }
+        return null;
     }
 }
