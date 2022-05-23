@@ -10,8 +10,6 @@ import com.gui.Board;
 import com.gui.Sidebar;
 import com.gui.WindowFrame;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -49,9 +47,23 @@ public class Main {
         chessboard.add("rnb_kb_R");
         chessboard.add("w");*/
 
+
+    }
+
+    public static void newGame(){
+        game = new Game();
+
+
+        game.loadChessGame(NEW_GAME_CHESSBOARD());
+        board.loadBoard(game.getChessComponents());
+    }
+    public static void loadGame(String fileName){
+        game = new Game();
+        game.loadChessGame(NEW_GAME_CHESSBOARD());
+        board.loadBoard(game.getChessComponents());
         List<String> loadGameFile;
         try {
-            loadGameFile = getListCoordinateFromFIle();
+            loadGameFile = getListCoordinateFromFIle(fileName);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -60,16 +72,30 @@ public class Main {
             for (String coordinate:
                     loadGameFile) {
 
-                move(new ChessboardPoint(Character.getNumericValue(coordinate.charAt(1)),Character.getNumericValue(coordinate.charAt(3))),new ChessboardPoint(Character.getNumericValue(coordinate.charAt(6)),Character.getNumericValue(coordinate.charAt(8))));
+                moveForLoadGame(new ChessboardPoint(Character.getNumericValue(coordinate.charAt(1)),Character.getNumericValue(coordinate.charAt(3))),new ChessboardPoint(Character.getNumericValue(coordinate.charAt(6)),Character.getNumericValue(coordinate.charAt(8))));
             }
         }
     }
+    public static void moveForLoadGame(ChessboardPoint from, ChessboardPoint to) {
 
-    public static void newGame(){
-        game = new Game();
+        ChessboardPoint move = game.moveChess(from, to);
+        if(move == null)
+            return;
+        board.movePiece(from, to);
 
-        game.loadChessGame(NEW_GAME_CHESSBOARD());
-        board.loadBoard(game.getChessComponents());
+        if(move instanceof SpecialMove){
+            if(move instanceof EnPassantMove){
+                EnPassantMove m = (EnPassantMove) move;
+                board.removePiece(m.capturePawn);
+            }else if (move instanceof CastleMove){
+                board.movePiece(new ChessboardPoint(move.X,move.Y==2?0:7),new ChessboardPoint(move.X,move.Y==2?3:5));
+                board.removePiece(new ChessboardPoint(move.X,move.Y==2?0:7));
+            }else if (move instanceof PromotionPawnMove){
+                board.removePiece(to);
+                board.addPiece(new Queen(to,game.getOpponentPlayer()));
+            }
+        }
+
     }
     private final static List<String> NEW_GAME_CHESSBOARD(){
         List<String> chessboard = new ArrayList<>();
@@ -88,13 +114,16 @@ public class Main {
         return board;
     }
 
+
     public static void hint(ChessboardPoint point) {
         ArrayList<ChessboardPoint> points = (ArrayList<ChessboardPoint>) game.getCanMovePoints(point);
         board.hint(points);
     }
+/*
     public static List<String> LoadGameSelectedGame(String filename){
         return null;
     }
+*/
 
     public static void move(ChessboardPoint from, ChessboardPoint to) {
 
@@ -118,14 +147,16 @@ public class Main {
         writeFile(from,to);
 
     }
-    public static List<String> getListCoordinateFromFIle() throws IOException {
+
+    public static List<String> getListCoordinateFromFIle(String fileName) throws IOException {
+        loadFromFile = fileName;
         List<String> chessboard = Files.readAllLines(Paths.get(loadFromFile));
         return chessboard;
     }
     public static void writeFile(ChessboardPoint from, ChessboardPoint to){
         try {
 
-            List<String> chessboard = getListCoordinateFromFIle();
+            List<String> chessboard = getListCoordinateFromFIle(loadFromFile);
             FileWriter writer = new FileWriter(loadFromFile);
             if (!chessboard.isEmpty()){
                 for (String coordinate:

@@ -8,8 +8,10 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class Sidebar extends JPanel {
+
     public Sidebar() {
         this.setBackground(Color.getHSBColor(0.3472222f, 0.050632913f, 0.92941177f));
         this.setOpaque(true);
@@ -22,8 +24,8 @@ public class Sidebar extends JPanel {
 
         PlayerPanelContainer panelContainer = new PlayerPanelContainer();
         ButtonContainer buttonContainer = new ButtonContainer();
-        MovesLabel movesLabel = new MovesLabel();
 
+        MovesLabel movesLabel = new MovesLabel();
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         panelContainer.setMaximumSize(new Dimension(400, 200));
@@ -128,6 +130,17 @@ class ButtonContainer extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Main.newGame();
+            }
+        });
+        loadGameBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    Main.loadGame(selectedFile.getAbsolutePath());
+                }
             }
         });
     }

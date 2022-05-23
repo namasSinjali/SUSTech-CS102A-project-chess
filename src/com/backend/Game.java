@@ -12,20 +12,20 @@ public class Game {
     // A 2-dimension array to store all the chess components
     // should be initialized in your construct method.
     // i.e. = new com.backend.ChessComponent[8][8]
-    private final Piece[][] pieces;
-
+    private static Piece[][] pieces = new Piece[8][8];
+    private ArrayList<String> chessNotation = new ArrayList<>();
     // What's the current player's color, black or white?
     // should be initialized in your construct method.
     // by default, set the color to white.
-    private ChessColor currentPlayer;
-    private Pawn enPassantTarget;
+    private static ChessColor currentPlayer;
+    private static Pawn enPassantTarget;
 
     public Game() {
         pieces = new Piece[8][8];
         Piece.setChessBoard(this.pieces);
     }
 
-    public Piece[][] getChessComponents() {
+    public static Piece[][] getChessComponents() {
         return pieces;
     }
 
@@ -90,10 +90,12 @@ public class Game {
     public ChessColor getCurrentPlayer() {
         return this.currentPlayer;
     }
-    public ChessColor getOpponentPlayer(){
-        if (getCurrentPlayer()==ChessColor.BLACK) return ChessColor.WHITE;
+
+    public ChessColor getOpponentPlayer() {
+        if (getCurrentPlayer() == ChessColor.BLACK) return ChessColor.WHITE;
         return ChessColor.BLACK;
     }
+
     public String getChessboardGraph() {
         StringBuilder graph = new StringBuilder();
         for (int i = 0; i < 8; i++) {
@@ -180,11 +182,11 @@ public class Game {
         return pieces[x][y];
     }
 
-    public Piece getChess(ChessboardPoint source) {
+    public static Piece getChess(ChessboardPoint source) {
         return pieces[source.X][source.Y];
     }
 
-    public List<ChessboardPoint> getCanMovePoints(ChessboardPoint source) {
+    public static List<ChessboardPoint> getCanMovePoints(ChessboardPoint source) {
         Piece chess = getChess(source);
         if (chess == null) return new ArrayList<>();
 
@@ -209,11 +211,134 @@ public class Game {
 
         return canMovePoints;
     }
+    public static Boolean disambiguation(Piece[][] board, Piece selectedPiece,ChessboardPoint target){
+        int a = 0;
+        ArrayList<Piece> listOfDisambiguationPiece = new ArrayList<>();
+        for (Piece[] pieces1 : board) {
+            for (Piece piece : pieces1) {
+                if (piece!=null && selectedPiece.toString().matches(piece.toString())) {
+                    listOfDisambiguationPiece.add(piece);
+                }
+            }
+        }
+        for(Piece piece: listOfDisambiguationPiece){
+            if (getMove(getCanMovePoints(piece.getLocation()),target)!=null)a++;
+        }
+        if (a!=1)return true;
+        return false;
+    }
+    public static String getNotation(ChessboardPoint toPoint, ChessboardPoint sourcePoint, Piece source, Piece target, boolean isKingCheck,boolean isDisambiguation) {
+        char colS = (char) (97 + sourcePoint.Y);
+        char colT = (char) (97 + toPoint.Y);
+        int rowT = 8 - toPoint.X;
+
+        //T= target S=source
+        String notation = "";
+        if (source instanceof Pawn) {
+            if (toPoint instanceof EnPassantMove) {
+                notation = String.format("%cx%c%d", colS, colT, rowT);
+            } else {
+                if (target == null) {
+                    notation = String.format("%c%d", colT, rowT);
+                } else {
+                    notation = String.format("%cx%c%d", colS, colT, rowT);
+                }
+            }
+        } else if (source instanceof Knight) {
+            if (target == null) {
+                if (isDisambiguation){
+                    notation = String.format("N%c%c%d",colS,colT, rowT);
+                }else{
+                    notation = String.format("N%c%d", colT, rowT);
+                }
+            } else {
+                if (isDisambiguation){
+                    notation = String.format("N%cx%c%d",colS,colT, rowT);
+                }else{
+                    notation = String.format("Nx%c%d", colT, rowT);
+                }
+            }
+        } else if (source instanceof Bishop) {
+            if (target == null) {
+                if (isDisambiguation){
+                    notation = String.format("B%c%c%d",colS,colT, rowT);
+                }else{
+                    notation = String.format("B%c%d", colT, rowT);
+                }
+            } else {
+                if (isDisambiguation){
+                    notation = String.format("B%cx%c%d",colS,colT, rowT);
+                }else{
+                    notation = String.format("Bx%c%d", colT, rowT);
+                }
+            }
+        } else if (source instanceof Rook) {
+            if (target == null) {
+                if (isDisambiguation){
+                    notation = String.format("R%c%c%d",colS,colT, rowT);
+                }else{
+                    notation = String.format("R%c%d", colT, rowT);
+                }
+            } else {
+                if (isDisambiguation){
+                    notation = String.format("R%cx%c%d",colS,colT, rowT);
+                }else{
+                    notation = String.format("Rx%c%d", colT, rowT);
+                }
+            }
+        } else if (source instanceof Queen) {
+            if (target == null) {
+                if (isDisambiguation){
+                    notation = String.format("Q%c%c%d",colS,colT, rowT);
+                }else{
+                    notation = String.format("Q%c%d", colT, rowT);
+                }
+            } else {
+                if (isDisambiguation){
+                    notation = String.format("Q%cx%c%d",colS,colT, rowT);
+                }else{
+                    notation = String.format("Qx%c%d", colT, rowT);
+                }
+            }
+        } else if (source instanceof King) {
+            if (toPoint instanceof CastleMove){
+                if (colT == 'g'){
+                    notation = "O-O";
+                }else {
+                    notation = "O-O-O";
+                }
+            }else{
+                if (target == null) {
+                    notation = String.format("K%c%d", colT, rowT);
+                } else {
+                    notation = String.format("Kx%c%d", colT, rowT);
+                }
+            }
+        }
+
+        if (isKingCheck) {
+            notation += "+";
+        }
+        System.out.println(notation);
+
+        return notation;
+    }
+
+    private Piece getCurrentKing() {
+        for (Piece[] pieces1 : pieces) {
+            for (Piece piece : pieces1) {
+                if (piece instanceof Knight && piece.getChessColor() == getCurrentPlayer()) {
+                    return piece;
+                }
+            }
+        }
+        return null;
+    }
 
     public ChessboardPoint moveChess(ChessboardPoint from, ChessboardPoint to) {
         Piece source = getChess(from);
         Piece target = getChess(to);
-
+        Boolean anyDisambiguation = Game.disambiguation(pieces,source,to);
         ChessboardPoint move = getMove(getCanMovePoints(from), to);
         if (move == null) // invalid move
             return null;
@@ -224,7 +349,7 @@ public class Game {
         source.setLocation(to);
         pieces[to.X][to.Y] = source;
         pieces[from.X][from.Y] = null;
-
+        //record the notation
         /*   special moves   */
         if (move instanceof SpecialMove) {
             if (move instanceof PawnTwoStepMove) {
@@ -234,17 +359,17 @@ public class Game {
             } else if (move instanceof EnPassantMove) {
                 EnPassantMove m = (EnPassantMove) move;
                 pieces[m.capturePawn.X][m.capturePawn.Y] = null;
-            }else if (move instanceof CastleMove) {
+            } else if (move instanceof CastleMove) {
                 pieces[move.X][move.Y == 2 ? 3 : 5] = pieces[move.X][move.Y == 2 ? 0 : 7];
                 pieces[move.X][move.Y == 2 ? 0 : 7].setLocation(new ChessboardPoint(move.X, move.Y == 2 ? 3 : 5));
                 pieces[move.X][move.Y == 2 ? 0 : 7] = null;
-            }else if(move instanceof PromotionPawnMove){
-                pieces[to.X][to.Y] = new Queen(to,currentPlayer);
+            } else if (move instanceof PromotionPawnMove) {
+                pieces[to.X][to.Y] = new Queen(to, currentPlayer);
             }
         }
 
-
         this.currentPlayer = (this.currentPlayer == ChessColor.BLACK) ? ChessColor.WHITE : ChessColor.BLACK;
+        chessNotation.add(getNotation(move, from, source, target, Utils.isKingCheck(pieces, getCurrentKing().getLocation(), getCurrentKing()),anyDisambiguation));
 
         return move;
     }
@@ -252,7 +377,7 @@ public class Game {
     public boolean isCheckMate() {
         for (Piece[] components : pieces) {
             for (Piece component : components) {
-                if (component!=null&&component.getChessColor() == getCurrentPlayer() && getCanMovePoints(component.getLocation()).isEmpty()) {
+                if (component != null && component.getChessColor() == getCurrentPlayer() && getCanMovePoints(component.getLocation()).isEmpty()) {
                     return true;
                 }
             }
@@ -261,11 +386,15 @@ public class Game {
         return false;
     }
 
-    private ChessboardPoint getMove(List<ChessboardPoint> points, ChessboardPoint point) {
+    private static ChessboardPoint getMove(List<ChessboardPoint> points, ChessboardPoint point) {
         for (ChessboardPoint p : points) {
             if (p.X == point.X && p.Y == point.Y)
                 return p;
         }
         return null;
     }
+    public ArrayList<String> getChessNotation(){ //call this method to get chess notation
+        return chessNotation;
+    }
+
 }
