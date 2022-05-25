@@ -5,10 +5,13 @@ import com.Main;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Sidebar extends JPanel {
 
@@ -120,30 +123,95 @@ class ButtonContainer extends JPanel {
     public ButtonContainer() {
         JButton newGameBtn = new CustomButton("New Game");
         JButton loadGameBtn = new CustomButton(("Load Game"));
-
-        this.setLayout(new GridLayout(2, 1, 10, 5));
+        JButton saveGameBtn = new CustomButton(("Save Game"));
+        JButton saveAsGameBtn = new CustomButton(("Save As Game"));
+        this.setLayout(new GridLayout(4, 1, 10, 5));
         this.setPreferredSize(new Dimension(0, 100));
         this.add(newGameBtn);
         this.add(loadGameBtn);
+        this.add(saveGameBtn);
+        this.add(saveAsGameBtn);
 
         newGameBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Main.newGame();
+                Main.loadFromFile = null;
             }
         });
         loadGameBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
-                int returnValue = fileChooser.showOpenDialog(null);
+
+
+                int returnValue;
+                fileChooser.setFileFilter(new FileNameExtensionFilter("java chess file", "bn"));
+                returnValue = fileChooser.showOpenDialog(null);
+                while (!fileChooser.getSelectedFile().getAbsolutePath().endsWith(".bn")) {
+                    JOptionPane.showMessageDialog(null, "Please choose \".bn\" file!");
+                    fileChooser.setFileFilter(new FileNameExtensionFilter("java chess file", "bn"));
+                    returnValue = fileChooser.showOpenDialog(null);
+                }
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
                     Main.loadGame(selectedFile.getAbsolutePath());
                 }
             }
         });
+        saveGameBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (Main.loadFromFile!=null){
+                    Main.saveCoordinate(Main.loadGameFile);
+                }else{
+                    saveGameAs();
+                }
+            }
+        });
+        saveAsGameBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (String tile :
+                        Main.loadGameFile) {
+                    System.out.println(tile);
+                }
+                saveGameAs();
+
+            }
+        });
     }
+    private void saveGameAs(){
+        JFileChooser fileChooser = new JFileChooser();
+
+        fileChooser.setFileFilter(new FileNameExtensionFilter("java chess file", "bn"));
+        int status = fileChooser.showSaveDialog(Main.window);
+
+        if (status == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String fileName = null;
+            try {
+                fileName = selectedFile.getCanonicalPath();
+                System.out.println(fileName);
+
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            if (!fileName.endsWith(".bn")) {
+                selectedFile = new File(fileName + ".bn");
+                try {
+                    System.out.println(selectedFile.createNewFile());
+                    Main.loadFromFile = selectedFile.getAbsolutePath();
+                    Main.saveCoordinate(Main.loadGameFile);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            }
+        }
+    }
+
+
 }
 
 class MovesLabel extends JPanel {
