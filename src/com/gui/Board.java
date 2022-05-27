@@ -27,7 +27,7 @@ public class Board extends JPanel {
         grid.setLayout(new GridLayout(8, 8));
         for (int i = 0; i < 8; i++) {
             for (char j = 0; j < 8; j++) {
-                Square l = new Square((i + j) % 2 == 0, i, j);
+                Square l = new Square((i + j) % 2 == 1, i, j);
                 this.squares[i][j] = l;
                 l.addMouseListener(listener);
                 grid.add(l);
