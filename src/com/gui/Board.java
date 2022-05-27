@@ -94,6 +94,7 @@ public class Board extends JPanel {
         }
     }
     public void emptyBoard(){
+        removeHint();
         for(Square[] row : squares){
             for(Square s : row){
                 s.removeIcon();
@@ -162,7 +163,6 @@ public class Board extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             Square source = (Square)e.getSource();
-            System.out.println(source.location);
 
 //            if(source == selectedSquare) {
 //                selectedSquare.highlight(false);
@@ -201,7 +201,6 @@ public class Board extends JPanel {
 
         @Override
         public void mouseEntered(MouseEvent e) {
-
         }
 
         @Override

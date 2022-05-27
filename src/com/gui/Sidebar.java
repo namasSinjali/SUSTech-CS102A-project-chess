@@ -16,7 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Sidebar extends JPanel {
-
+    private final PlayerPanel whitePanel = new PlayerPanel(ChessColor.WHITE, false);
+    private final PlayerPanel blackPanel = new PlayerPanel(ChessColor.BLACK, false);
     public Sidebar() {
         this.setBackground(Color.getHSBColor(0.3472222f, 0.050632913f, 0.92941177f));
         this.setOpaque(true);
@@ -27,7 +28,14 @@ public class Sidebar extends JPanel {
 //        Image i = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 //        icon = new ImageIcon(i);
 
-        PlayerPanelContainer panelContainer = new PlayerPanelContainer();
+        JPanel panelContainer = new JPanel();
+        whitePanel.label.setText("White");
+        blackPanel.label.setText("Black");
+        panelContainer.setOpaque(false);
+        panelContainer.setLayout(new GridLayout(1, 2));
+        panelContainer.add(whitePanel);
+        panelContainer.add(blackPanel);
+
         ButtonContainer buttonContainer = new ButtonContainer();
 
         MovesLabel movesLabel = new MovesLabel();
@@ -59,19 +67,17 @@ public class Sidebar extends JPanel {
         width = Math.min(500, width);
         this.setPreferredSize(new Dimension(width, parent.getHeight()));
     }
-}
-class PlayerPanelContainer extends JPanel {
-    public PlayerPanelContainer(){
-        PlayerPanel whitePanel = new PlayerPanel(ChessColor.WHITE, true);
-        PlayerPanel blackPanel = new PlayerPanel(ChessColor.BLACK, false);
 
-        whitePanel.label.setText("White");
-        blackPanel.label.setText("Black");
+    public void updateInterface(){
+        ChessColor currentPlayer = Main.getGame().getCurrentPlayer();
 
-        this.setOpaque(false);
-        this.setLayout(new GridLayout(1, 2));
-        this.add(whitePanel);
-        this.add(blackPanel);
+        if(currentPlayer == ChessColor.BLACK){
+            whitePanel.setActive(false);
+            blackPanel.setActive(true);
+        } else {
+            blackPanel.setActive(false);
+            whitePanel.setActive(true);
+        }
     }
 }
 class PlayerPanel extends JPanel implements ActionListener {
@@ -99,33 +105,21 @@ class PlayerPanel extends JPanel implements ActionListener {
         this.add(btnResign);
 
         this.setBackground(Color.getHSBColor(0.34313726f, 0.17f, 0.78431374f));
-
-        btnResign.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, playerColor==ChessColor.BLACK?"WHITE WINS":"BLACK WINS");
-                Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
-                Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
-            }
-        });
-
       }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-//                Main.resign(playerColor);
-        setActive(!isActive);
+        JOptionPane.showMessageDialog(null, playerColor==ChessColor.BLACK?"WHITE WINS":"BLACK WINS");
+        Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
+        Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
     }
 
     public void setActive(boolean state) {
         isActive = state;
-        if(state){
-            this.setOpaque(true);
-            label.setFont(label.getFont().deriveFont(Font.BOLD));
-        } else {
-            this.setOpaque(false);
-            label.setFont(label.getFont().deriveFont(Font.PLAIN));
-        }
+        this.setOpaque(state);
+        this.btnResign.setEnabled(state);
+        label.setFont(label.getFont().deriveFont( state ? Font.BOLD : Font.PLAIN ));
+
         repaint();
     }
 }

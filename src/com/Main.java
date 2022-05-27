@@ -60,6 +60,7 @@ public class Main {
         loadGameFile = new ArrayList<>();
         game.loadChessGame(NEW_GAME_CHESSBOARD());
         board.loadBoard(game.getChessComponents());
+        window.updateInterface();
     }
 
     public static void loadGame(String fileName) {
@@ -85,7 +86,7 @@ public class Main {
             }
         }
 
-
+        window.updateInterface();
 
 
     }
@@ -108,6 +109,7 @@ public class Main {
         return board;
     }
 
+    public static Game getGame() {return game;}
 
     public static void hint(ChessboardPoint point) {
         ArrayList<ChessboardPoint> points = (ArrayList<ChessboardPoint>) game.getCanMovePoints(point);
@@ -125,6 +127,7 @@ public class Main {
         if (move == null)
             return;
         board.movePiece(from, to);
+        window.updateInterface();
 
         if (move instanceof SpecialMove) {
             if (move instanceof EnPassantMove) {
