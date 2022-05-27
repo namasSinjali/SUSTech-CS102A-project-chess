@@ -2,6 +2,8 @@ package com.gui;
 
 import com.ChessColor;
 import com.Main;
+import com.backend.Game;
+import com.sun.org.glassfish.gmbal.GmbalException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -97,6 +99,15 @@ class PlayerPanel extends JPanel implements ActionListener {
         this.add(btnResign);
 
         this.setBackground(Color.getHSBColor(0.34313726f, 0.17f, 0.78431374f));
+
+        btnResign.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, playerColor==ChessColor.BLACK?"WHITE WINS":"BLACK WINS");
+                Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
+                Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
+            }
+        });
 
       }
 

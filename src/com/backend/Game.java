@@ -5,6 +5,7 @@ import com.ChessboardPoint;
 import com.backend.piece.*;
 import com.backend.special_moves.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class Game {
     // should be initialized in your construct method.
     // i.e. = new com.backend.ChessComponent[8][8]
     private static Piece[][] pieces = new Piece[8][8];
-    private ArrayList<String> chessNotation = new ArrayList<>();
+    public static ArrayList<String> chessNotation = new ArrayList<>();
     // What's the current player's color, black or white?
     // should be initialized in your construct method.
     // by default, set the color to white.
@@ -87,8 +88,8 @@ public class Game {
             currentPlayer = ChessColor.BLACK;
     }
 
-    public ChessColor getCurrentPlayer() {
-        return this.currentPlayer;
+    public static ChessColor getCurrentPlayer() {
+        return currentPlayer;
     }
 
     public ChessColor getOpponentPlayer() {
@@ -317,7 +318,21 @@ public class Game {
         }
 
         if (isKingCheck) {
-            notation += "+";
+
+            if (isCheckMate()){
+                notation +="#";
+                if (currentPlayer==ChessColor.BLACK){
+                    notation+=" 1-0";
+                }else{
+                    notation+=" 0-1";
+
+                }
+            }else {
+                notation += "+";
+            }
+        }
+        if (isCheckMate()&&!isKingCheck){
+            notation += " 1/2-1/2";
         }
         System.out.println(notation);
 
@@ -374,7 +389,7 @@ public class Game {
         return move;
     }
 
-    public boolean isCheckMate() {
+    public static boolean isCheckMate() {
         for (Piece[] components : pieces) {
             for (Piece component : components) {
                 if (component != null && component.getChessColor() == getCurrentPlayer() && getCanMovePoints(component.getLocation()).isEmpty()) {
