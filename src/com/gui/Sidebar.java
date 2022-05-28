@@ -28,6 +28,7 @@ public class Sidebar extends JPanel {
 //        Image i = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 //        icon = new ImageIcon(i);
 
+
         JPanel panelContainer = new JPanel();
         whitePanel.label.setText("White");
         blackPanel.label.setText("Black");
@@ -39,6 +40,9 @@ public class Sidebar extends JPanel {
         ButtonContainer buttonContainer = new ButtonContainer();
 
         MovesLabel movesLabel = new MovesLabel();
+
+        ThemeSelector themeSelector = new ThemeSelector();
+
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         panelContainer.setMaximumSize(new Dimension(400, 200));
@@ -56,11 +60,15 @@ public class Sidebar extends JPanel {
         this.add(movesLabel);
 
         this.add(Box.createVerticalGlue());
+
+        themeSelector.setMaximumSize(new Dimension(400, 20));
+        this.add(themeSelector);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        this.setBackground(WindowFrame.getCurrentTheme().white);
         Component parent = this.getParent();
         int width = parent.getWidth()/4;
         width = Math.max(300, width);
@@ -78,6 +86,34 @@ public class Sidebar extends JPanel {
             blackPanel.setActive(false);
             whitePanel.setActive(true);
         }
+    }
+}
+class ThemeSelector extends JPanel {
+    public ThemeSelector(){
+        ButtonGroup group = new ButtonGroup();
+        for(Theme theme : Theme.values()){
+            JRadioButton btn = new JRadioButton(){
+                @Override
+                protected void paintComponent(Graphics g) {
+//                    super.paintComponent(g);
+                    this.setSize(20, 20);
+                    g.setColor(theme.highlight);
+                    g.fillOval(0, 0, 20, 20);
+                }
+            };
+            btn.setActionCommand(theme.toString());
+            btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    WindowFrame.setCurrentTheme(theme);
+                }
+            });
+
+            group.add(btn);
+            this.add(btn);
+        }
+
+        this.setOpaque(false);
     }
 }
 class PlayerPanel extends JPanel implements ActionListener {
@@ -112,6 +148,8 @@ class PlayerPanel extends JPanel implements ActionListener {
         JOptionPane.showMessageDialog(null, playerColor==ChessColor.BLACK?"WHITE WINS":"BLACK WINS");
         Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
         Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
+        WindowFrame.setCurrentTheme(Theme.BLUE);
+        Main.window.repaint();
     }
 
     public void setActive(boolean state) {
@@ -121,6 +159,12 @@ class PlayerPanel extends JPanel implements ActionListener {
         label.setFont(label.getFont().deriveFont( state ? Font.BOLD : Font.PLAIN ));
 
         repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        this.setBackground(WindowFrame.getCurrentTheme().black);
     }
 }
 
@@ -225,8 +269,9 @@ class MovesLabel extends JPanel {
         textArea.setText("1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 d6 ");
         textArea.setLineWrap(true);
         textArea.setEditable(false);
-        textArea.setBackground(Color.getHSBColor(0.34313726f, 0.17f, 0.78431374f));
-        textArea.setForeground(new Color(11, 70, 13));
+//        textArea.setBackground(Color.getHSBColor(0.34313726f, 0.17f, 0.78431374f));
+        textArea.setOpaque(false);
+//        textArea.setForeground(new Color(11, 70, 13));
         textArea.setBorder(new EmptyBorder(5,5,5,5));
 
         this.setPreferredSize(new Dimension(350, 200));
@@ -235,5 +280,13 @@ class MovesLabel extends JPanel {
         this.setLayout(new BorderLayout());
         this.add(textArea, BorderLayout.CENTER);
         this.setOpaque(true);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        this.setBackground(WindowFrame.getCurrentTheme().black);
+        this.setForeground(WindowFrame.getCurrentTheme().hint);
     }
 }

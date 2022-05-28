@@ -12,10 +12,12 @@ class Square extends JLabel {
     private Circle hintCircle = new Circle();
     private boolean isHighlighted = false;
     private boolean isEmpty = true;
+    private boolean isBlack;
 
     protected final ChessboardPoint location;
 
     public Square(boolean isBlack, int x, int y) {
+        this.isBlack = isBlack;
         normalBgColor = isBlack ? Color.getHSBColor(0.34313726f, 0.17f, 0.78431374f) : Color.getHSBColor(0.3472222f, 0.050632913f, 0.92941177f);
 
         this.location = new ChessboardPoint(x, y);
@@ -62,7 +64,14 @@ class Square extends JLabel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        this.setBackground(isHighlighted ? highlightBgColor : normalBgColor);
+        Theme theme = WindowFrame.getCurrentTheme();
+        Color c = isBlack ? theme.black : theme.white;
+
+        if(isHighlighted)
+            c=theme.highlight;
+
+//        this.setBackground(isHighlighted ? highlightBgColor : normalBgColor);
+        this.setBackground(c);
     }
 
     private class Circle extends JLabel {
@@ -77,7 +86,7 @@ class Square extends JLabel {
             int radius = (int)(this.getWidth() * .15);
             int x = this.getWidth()/2 - radius;
             int y = this.getHeight()/2 - radius;
-            g.setColor(hintColor);
+            g.setColor(WindowFrame.getCurrentTheme().hint);
             g.fillOval(x, y, 2*radius, 2*radius);
         }
     }

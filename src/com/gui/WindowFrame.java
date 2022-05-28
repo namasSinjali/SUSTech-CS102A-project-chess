@@ -7,8 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class WindowFrame extends JFrame {
-    Sidebar sidebar = new Sidebar();
+    private Sidebar sidebar = new Sidebar();
 
+    private static Theme currentTheme = Theme.GREEN;
     public WindowFrame(){
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -25,5 +26,13 @@ public class WindowFrame extends JFrame {
     }
     public void updateInterface(){
         sidebar.updateInterface();
+    }
+    public static Theme getCurrentTheme(){
+        return currentTheme;
+    }
+    public static void setCurrentTheme(Theme theme){
+        if(currentTheme == theme) return;
+        currentTheme = theme;
+        Main.window.repaint();
     }
 }
