@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Board extends JPanel {
     private Square[][] squares = new Square[8][8];
     private Square selectedSquare;
+    private Square hoverSquare;
     private ArrayList<Square> hintSquares = new ArrayList<>();
 
     public Board() {
@@ -150,6 +151,7 @@ public class Board extends JPanel {
         removeSelection();
         s.highlight(true);
         selectedSquare = s;
+        hoverSquare = null;
         Main.hint(selectedSquare.location);
     }
     public void removeSelection(){
@@ -201,11 +203,18 @@ public class Board extends JPanel {
 
         @Override
         public void mouseEntered(MouseEvent e) {
+            Square source = (Square)e.getSource();
+
+            if(source == selectedSquare) return;
+            source.highlight(true);
+            hoverSquare = source;
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-
+            Square source = (Square)e.getSource();
+            if (hoverSquare == null) return;
+            hoverSquare.highlight(false);
         }
     };
 }

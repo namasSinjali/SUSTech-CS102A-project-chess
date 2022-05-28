@@ -88,34 +88,6 @@ public class Sidebar extends JPanel {
         }
     }
 }
-class ThemeSelector extends JPanel {
-    public ThemeSelector(){
-        ButtonGroup group = new ButtonGroup();
-        for(Theme theme : Theme.values()){
-            JRadioButton btn = new JRadioButton(){
-                @Override
-                protected void paintComponent(Graphics g) {
-//                    super.paintComponent(g);
-                    this.setSize(20, 20);
-                    g.setColor(theme.highlight);
-                    g.fillOval(0, 0, 20, 20);
-                }
-            };
-            btn.setActionCommand(theme.toString());
-            btn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    WindowFrame.setCurrentTheme(theme);
-                }
-            });
-
-            group.add(btn);
-            this.add(btn);
-        }
-
-        this.setOpaque(false);
-    }
-}
 class PlayerPanel extends JPanel implements ActionListener {
     final ChessColor playerColor;
     private boolean isActive;
@@ -148,8 +120,6 @@ class PlayerPanel extends JPanel implements ActionListener {
         JOptionPane.showMessageDialog(null, playerColor==ChessColor.BLACK?"WHITE WINS":"BLACK WINS");
         Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
         Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
-        WindowFrame.setCurrentTheme(Theme.BLUE);
-        Main.window.repaint();
     }
 
     public void setActive(boolean state) {
@@ -288,5 +258,33 @@ class MovesLabel extends JPanel {
 
         this.setBackground(WindowFrame.getCurrentTheme().black);
         this.setForeground(WindowFrame.getCurrentTheme().hint);
+    }
+}
+class ThemeSelector extends JPanel {
+    public ThemeSelector(){
+        ButtonGroup group = new ButtonGroup();
+        for(Theme theme : Theme.values()){
+            JRadioButton btn = new JRadioButton(){
+                @Override
+                protected void paintComponent(Graphics g) {
+//                    super.paintComponent(g);
+                    this.setSize(20, 20);
+                    g.setColor(theme.highlight);
+                    g.fillOval(0, 0, 20, 20);
+                }
+            };
+            btn.setActionCommand(theme.toString());
+            btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    WindowFrame.setCurrentTheme(theme);
+                }
+            });
+
+            group.add(btn);
+            this.add(btn);
+        }
+
+        this.setOpaque(false);
     }
 }
