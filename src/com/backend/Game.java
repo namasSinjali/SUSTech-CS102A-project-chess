@@ -319,23 +319,23 @@ public class Game {
 
         if (isKingCheck) {
 
-            if (isCheckMate()){
-                notation +="#";
-                if (currentPlayer==ChessColor.BLACK){
-                    notation+=" 1-0";
-                }else{
-                    notation+=" 0-1";
+            if (isCheckMate()) {
+                //checkmate
+                if (currentPlayer == ChessColor.BLACK) {
+                    notation += " 1-0";//the score
+                } else {
+                    notation += " 0-1";
 
                 }
-            }else {
-                notation += "+";
+            } else {
+                notation += "+";// only for check
             }
         }
-        if (isCheckMate()&&!isKingCheck){
+        if (!isCheckMate()&&!isKingCheck){
             notation += " 1/2-1/2";
         }
+         //
         System.out.println(notation);
-
         return notation;
     }
 
