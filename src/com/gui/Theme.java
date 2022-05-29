@@ -4,8 +4,8 @@ import java.awt.Color;
 
 public enum Theme {
     GREEN(
-            Color.getHSBColor(0.3472222f, 0.050632913f, 0.92941177f),
-            Color.getHSBColor(0.34313726f, 0.17f, 0.78431374f),
+            new Color(225, 237, 226),
+            new Color(166, 200, 168),
             new Color(49, 160, 54),
             new Color(11, 70, 13)
     ),

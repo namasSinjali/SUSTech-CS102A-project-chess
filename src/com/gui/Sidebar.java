@@ -18,6 +18,8 @@ import java.util.ArrayList;
 public class Sidebar extends JPanel {
     private final PlayerPanel whitePanel = new PlayerPanel(ChessColor.WHITE, false);
     private final PlayerPanel blackPanel = new PlayerPanel(ChessColor.BLACK, false);
+    private final MovesLabel movesLabel = new MovesLabel();
+
     public Sidebar() {
         this.setBackground(Color.getHSBColor(0.3472222f, 0.050632913f, 0.92941177f));
         this.setOpaque(true);
@@ -38,8 +40,6 @@ public class Sidebar extends JPanel {
         panelContainer.add(blackPanel);
 
         ButtonContainer buttonContainer = new ButtonContainer();
-
-        MovesLabel movesLabel = new MovesLabel();
 
         ThemeSelector themeSelector = new ThemeSelector();
 
@@ -86,6 +86,8 @@ public class Sidebar extends JPanel {
             blackPanel.setActive(false);
             whitePanel.setActive(true);
         }
+
+        movesLabel.updateLabel();
     }
 }
 class PlayerPanel extends JPanel implements ActionListener {
@@ -117,9 +119,10 @@ class PlayerPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        JOptionPane.showMessageDialog(null, playerColor==ChessColor.BLACK?"WHITE WINS":"BLACK WINS");
-        Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
-        Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
+//        JOptionPane.showMessageDialog(null, playerColor==ChessColor.BLACK?"WHITE WINS":"BLACK WINS");
+//        Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
+//        Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
+        Main.endGame(playerColor == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE);
     }
 
     public void setActive(boolean state) {
@@ -236,7 +239,7 @@ class ButtonContainer extends JPanel {
 class MovesLabel extends JPanel {
     final JTextArea textArea = new JTextArea();
     public MovesLabel() {
-        textArea.setText("1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 d6 ");
+//        textArea.setText("1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 d6 ");
         textArea.setLineWrap(true);
         textArea.setEditable(false);
 //        textArea.setBackground(Color.getHSBColor(0.34313726f, 0.17f, 0.78431374f));
@@ -258,6 +261,13 @@ class MovesLabel extends JPanel {
 
         this.setBackground(WindowFrame.getCurrentTheme().black);
         this.setForeground(WindowFrame.getCurrentTheme().hint);
+    }
+    public void updateLabel(){
+        ArrayList<String> notation = Main.getGame().getChessNotation();
+        textArea.setText("");
+        for(String s : notation){
+            textArea.append(s);
+        }
     }
 }
 class ThemeSelector extends JPanel {

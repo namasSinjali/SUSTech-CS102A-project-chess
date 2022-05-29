@@ -25,7 +25,7 @@ public enum Icons {
         this.iconResized = this.icon;
     }
 
-    ImageIcon getIcon(){
+    public ImageIcon getIcon(){
         return icon;
     }
     private ImageIcon getOriginalIcon(){

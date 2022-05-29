@@ -7,6 +7,7 @@ import com.backend.special_moves.EnPassantMove;
 import com.backend.special_moves.PromotionPawnMove;
 import com.backend.special_moves.SpecialMove;
 import com.gui.Board;
+import com.gui.Icons;
 import com.gui.Sidebar;
 import com.gui.WindowFrame;
 
@@ -168,5 +169,16 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static void endGame(ChessColor winner){
+        if(winner == null){
+
+        }
+        JOptionPane pane = new JOptionPane();
+        pane.setIcon(winner == ChessColor.BLACK ? Icons.BLACK_KING.getIcon() : Icons.WHITE_KING.getIcon());
+        pane.createDialog(winner.toString() + " WINS");
+//        JOptionPane.showMessageDialog(null, winner.toString() + " WINS");
+//        Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
+//        Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
     }
 }

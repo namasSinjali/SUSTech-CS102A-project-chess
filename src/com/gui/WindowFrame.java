@@ -11,6 +11,7 @@ public class WindowFrame extends JFrame {
 
     private static Theme currentTheme = Theme.GREEN;
     public WindowFrame(){
+        this.setIconImage(Icons.WHITE_KNIGHT.getIcon().getImage());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setMinimumSize(new Dimension(900, 650));
