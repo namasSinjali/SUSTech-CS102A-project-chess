@@ -10,14 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
-    // A 2-dimension array to store all the chess components
-    // should be initialized in your construct method.
-    // i.e. = new com.backend.ChessComponent[8][8]
     private static Piece[][] pieces = new Piece[8][8];
     public static ArrayList<String> chessNotation = new ArrayList<>();
-    // What's the current player's color, black or white?
-    // should be initialized in your construct method.
-    // by default, set the color to white.
     private static ChessColor currentPlayer;
     private static Pawn enPassantTarget;
     public static boolean isItEndGame = false;

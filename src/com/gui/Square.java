@@ -35,7 +35,6 @@ class Square extends JLabel {
         this.hintCircle.setVisible(state);
     }
     public void highlight(boolean state){
-//        this.setBackground(state ? highlightBgColor : normalBgColor);
         this.isHighlighted = state;
         this.repaint();
     }
@@ -70,7 +69,6 @@ class Square extends JLabel {
         if(isHighlighted)
             c=theme.highlight;
 
-//        this.setBackground(isHighlighted ? highlightBgColor : normalBgColor);
         this.setBackground(c);
     }
 
@@ -90,9 +88,4 @@ class Square extends JLabel {
             g.fillOval(x, y, 2*radius, 2*radius);
         }
     }
-
-//    @Override
-//    public String toString(){
-//        return String.format("%c%d", (char)y+'a', x+1);
-//    }
 }

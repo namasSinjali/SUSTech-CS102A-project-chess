@@ -84,7 +84,6 @@ public class Board extends JPanel {
         int side = (width < height) ? width : height;
 
         this.setPreferredSize(new Dimension(side, side));
-//        this.setLocation((width-side)/2, (height-side)/2);
     }
 
     public void loadBoard(Piece[][] chessBoard){
@@ -167,18 +166,6 @@ public class Board extends JPanel {
         public void mouseClicked(MouseEvent e) {
             Square source = (Square)e.getSource();
 
-//            if(source == selectedSquare) {
-//                selectedSquare.highlight(false);
-//                selectedSquare = null;
-//                removeHint();
-//                return;
-//            }
-//            if(selectedSquare != null)
-//                selectedSquare.highlight(false);
-//
-//            source.highlight(true);
-//            selectedSquare = source;
-//            com.Main.hint(new com.ChessboardPoint(source.x, source.y));
             if(hintSquares.contains(source)){
                 Main.move(selectedSquare.location, source.location);
                 removeSelection();
