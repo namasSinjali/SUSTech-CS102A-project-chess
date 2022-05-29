@@ -238,7 +238,6 @@ public class Game {
         char colS = (char) (97 + sourcePoint.Y);
         char colT = (char) (97 + toPoint.Y);
         int rowT = 8 - toPoint.X;
-
         //T= target S=source
         String notation = "";
         if (source instanceof Pawn) {
@@ -347,7 +346,6 @@ public class Game {
             notation += " 1/2-1/2";
             Game.isItEndGame = true;
         }
-        System.out.println(isCheckMate());
         //
         System.out.println(notation);
         return notation;
@@ -356,7 +354,7 @@ public class Game {
     private Piece getCurrentKing() {
         for (Piece[] pieces1 : pieces) {
             for (Piece piece : pieces1) {
-                if (piece instanceof Knight && piece.getChessColor() == getCurrentPlayer()) {
+                if (piece instanceof King && piece.getChessColor() == getCurrentPlayer()) {
                     return piece;
                 }
             }
