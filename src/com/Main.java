@@ -57,7 +57,7 @@ public class Main {
 
     public static void newGame() {
         game = new Game();
-
+        Game.chessNotation = new ArrayList<>();
         loadGameFile = new ArrayList<>();
         game.loadChessGame(NEW_GAME_CHESSBOARD());
         board.loadBoard(game.getChessComponents());
@@ -66,6 +66,9 @@ public class Main {
 
     public static void loadGame(String fileName) {
         game = new Game();
+
+        Game.chessNotation = new ArrayList<>();
+        loadGameFile = new ArrayList<>();
         game.loadChessGame(NEW_GAME_CHESSBOARD());
         board.loadBoard(game.getChessComponents());
         loadGameFile = new ArrayList<>();
