@@ -119,10 +119,7 @@ class PlayerPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-//        JOptionPane.showMessageDialog(null, playerColor==ChessColor.BLACK?"WHITE WINS":"BLACK WINS");
-//        Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
-//        Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
-        Main.endGame(playerColor == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE);
+        Main.resign(playerColor);
     }
 
     public void setActive(boolean state) {
@@ -265,8 +262,13 @@ class MovesLabel extends JPanel {
     public void updateLabel(){
         ArrayList<String> notation = Main.getGame().getChessNotation();
         textArea.setText("");
-        for(String s : notation){
-            textArea.append(s);
+
+        for(int i=0, n = notation.size(); i< n; i++){
+            String s = notation.get(i);
+            if(i % 2 == 0){
+                textArea.append(String.valueOf(i/2 + 1) + ". ");
+            }
+            textArea.append(s + " ");
         }
     }
 }
