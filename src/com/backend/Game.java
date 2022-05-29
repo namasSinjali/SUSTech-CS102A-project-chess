@@ -20,7 +20,13 @@ public class Game {
     // by default, set the color to white.
     private static ChessColor currentPlayer;
     private static Pawn enPassantTarget;
-
+    public static boolean isItEndGame = false;
+    public static ChessColor whoWins = null;
+    public void setGameToDefault(){
+        Game.chessNotation = new ArrayList<>();
+        whoWins = null;
+        isItEndGame = false;
+    }
     public Game() {
         pieces = new Piece[8][8];
         Piece.setChessBoard(this.pieces);
@@ -322,19 +328,27 @@ public class Game {
             if (isCheckMate()) {
                 //checkmate
                 if (currentPlayer == ChessColor.BLACK) {
-                    notation += " 1-0";//the score
+                    notation += " 1-0";
+                    Game.isItEndGame = true;
+
+                    Game.whoWins = ChessColor.WHITE;
                 } else {
                     notation += " 0-1";
+                    Game.isItEndGame = true;
+
+                    Game.whoWins = ChessColor.BLACK;
 
                 }
             } else {
                 notation += "+";// only for check
             }
         }
-        if (!isCheckMate()&&!isKingCheck){
+        if (isCheckMate()&&!isKingCheck){
             notation += " 1/2-1/2";
+            Game.isItEndGame = true;
         }
-         //
+        System.out.println(isCheckMate());
+        //
         System.out.println(notation);
         return notation;
     }
@@ -392,13 +406,13 @@ public class Game {
     public static boolean isCheckMate() {
         for (Piece[] components : pieces) {
             for (Piece component : components) {
-                if (component != null && component.getChessColor() == getCurrentPlayer() && getCanMovePoints(component.getLocation()).isEmpty()) {
-                    return true;
+                if (component != null && component.getChessColor() == getCurrentPlayer() && !getCanMovePoints(component.getLocation()).isEmpty()) {
+                    return false;
                 }
             }
 
         }
-        return false;
+        return true;
     }
 
     private static ChessboardPoint getMove(List<ChessboardPoint> points, ChessboardPoint point) {

@@ -3,6 +3,7 @@ package com.gui;
 import com.ChessColor;
 import com.ChessboardPoint;
 import com.Main;
+import com.backend.Game;
 import com.backend.piece.*;
 
 import javax.swing.*;
@@ -182,6 +183,9 @@ public class Board extends JPanel {
                 Main.move(selectedSquare.location, source.location);
                 removeSelection();
                 removeHint();
+                if (Game.isItEndGame){
+                    Main.endGame(Game.whoWins);
+                }
                 return;
             }
 

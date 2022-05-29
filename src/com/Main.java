@@ -57,8 +57,9 @@ public class Main {
 
     public static void newGame() {
         game = new Game();
-        Game.chessNotation = new ArrayList<>();
+        game.setGameToDefault();
         loadGameFile = new ArrayList<>();
+
         game.loadChessGame(NEW_GAME_CHESSBOARD());
         board.loadBoard(game.getChessComponents());
         window.updateInterface();
@@ -67,7 +68,7 @@ public class Main {
     public static void loadGame(String fileName) {
         game = new Game();
 
-        Game.chessNotation = new ArrayList<>();
+        game.setGameToDefault();
         loadGameFile = new ArrayList<>();
         game.loadChessGame(NEW_GAME_CHESSBOARD());
         board.loadBoard(game.getChessComponents());
@@ -166,7 +167,7 @@ public class Main {
                     writer.write("\n");
                 }
             }
-
+            JOptionPane.showMessageDialog(null, "Game Saved!");
 
             writer.close();
         } catch (IOException e) {
