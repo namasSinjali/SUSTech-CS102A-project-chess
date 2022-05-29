@@ -175,8 +175,8 @@ public class Main {
         }
     }
     public static void resign(ChessColor playerColor){
-        Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"1-0");
-        Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"1-0");
+        Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"0-1");
+        Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"0-1");
         window.updateInterface();
 
         endGame(playerColor == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE);
