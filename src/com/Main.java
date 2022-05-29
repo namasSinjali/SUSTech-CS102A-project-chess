@@ -173,15 +173,27 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
+    public static void resign(ChessColor playerColor){
+        Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"1-0");
+        Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"1-0");
+        window.updateInterface();
+
+        endGame(playerColor == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE);
+    }
     public static void endGame(ChessColor winner){
         if(winner == null){
-
+            JOptionPane.showMessageDialog(Main.window,
+                    " DRAW\nStarting new game",
+                    "Game Over",
+                    JOptionPane.PLAIN_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(Main.window,
+                    winner.toString() + " WINS\nStarting new game",
+                    "Game Over",
+                    JOptionPane.INFORMATION_MESSAGE,
+                    winner == ChessColor.BLACK ? Icons.BLACK_KING.getIcon() : Icons.WHITE_KING.getIcon());
         }
-        JOptionPane pane = new JOptionPane();
-        pane.setIcon(winner == ChessColor.BLACK ? Icons.BLACK_KING.getIcon() : Icons.WHITE_KING.getIcon());
-        pane.createDialog(winner.toString() + " WINS");
-//        JOptionPane.showMessageDialog(null, winner.toString() + " WINS");
-//        Main.loadGameFile.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
-//        Game.chessNotation.add(playerColor==ChessColor.BLACK?"1-0":"0-0");
+
+        Main.newGame();
     }
 }
