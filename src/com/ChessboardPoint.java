@@ -4,49 +4,25 @@ public class ChessboardPoint {
     public final int X;
     public final int Y;
 
-    /**
-     * should design
-     * @param x
-     * @param y
-     */
     public ChessboardPoint(int x, int y) {
         this.X = x;
         this.Y = y;
     }
 
-    /**
-     * should design
-     * @return
-     */
     public int getX() {
         return X;
     }
 
-    /**
-     * should design
-     * @return
-     */
     public int getY() {
         return Y;
     }
 
-    /**
-     * should design
-     * @return
-     */
     @Override
     public String toString() {
         return String.format("(%d,%d)", X, Y);
     }
 
 
-    /**
-     * should design
-     *
-     * @param dx
-     * @param dy
-     * @return
-     */
     public ChessboardPoint offset(int dx, int dy) {
         int x = this.X + dx;
         int y = this.Y + dy;

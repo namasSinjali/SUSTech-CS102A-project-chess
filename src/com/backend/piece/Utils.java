@@ -26,27 +26,6 @@ public class Utils {
 
     }
 
-//    public static boolean isChanceOfPawnSpecialMove = false;
-//    static ChessboardPoint[] whoCanDoPawnSpecialMove = new ChessboardPoint[2];
-//    static ChessboardPoint candidateTargetCoordinate = null;
-//    public static ChessboardPoint candidateWillDeathPawn = null;
-//    public static void setWhoCanDoPawnSpecialMove(ChessboardPoint first,
-//                                           ChessboardPoint second,
-//                                           ChessboardPoint candidateTargetCoordinateP,
-//                                           ChessboardPoint candidateWillDeath) {
-//        whoCanDoPawnSpecialMove[0] = first;
-//        whoCanDoPawnSpecialMove[1] = second;
-//        candidateTargetCoordinate = candidateTargetCoordinateP;
-//        isChanceOfPawnSpecialMove = true;
-//        candidateWillDeathPawn = candidateWillDeath;
-//    }
-//    public static void setWhoCanDoPawnSpecialMoveDefault() {
-//        whoCanDoPawnSpecialMove = new ChessboardPoint[2];
-//        isChanceOfPawnSpecialMove = false;
-//        candidateTargetCoordinate= null;
-//        candidateWillDeathPawn = null;
-//    }
-
     private static final int[][] KING_CHECK_MOVES = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1}};
     private static final int[][] BLACK_PAWN_CHECK_MOVES = {{1, 1}, {1, -1}};
     private static final int[][] WHITE_PAWN_CHECK_MOVES = {{-1, 1}, {-1, -1}};

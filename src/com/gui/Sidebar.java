@@ -236,12 +236,9 @@ class ButtonContainer extends JPanel {
 class MovesLabel extends JPanel {
     final JTextArea textArea = new JTextArea();
     public MovesLabel() {
-//        textArea.setText("1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 d6 ");
         textArea.setLineWrap(true);
         textArea.setEditable(false);
-//        textArea.setBackground(Color.getHSBColor(0.34313726f, 0.17f, 0.78431374f));
         textArea.setOpaque(false);
-//        textArea.setForeground(new Color(11, 70, 13));
         textArea.setBorder(new EmptyBorder(5,5,5,5));
 
         this.setPreferredSize(new Dimension(350, 200));

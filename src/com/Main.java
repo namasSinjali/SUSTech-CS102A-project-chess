@@ -26,30 +26,8 @@ public class Main {
     public static String loadFromFile = null;
 
     public static void main(String[] args) {
-//        JFrame frame = new JFrame();
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//        frame.setLayout(new BorderLayout());
-//
-//        JPanel sidebar = new Sidebar();
-//
-//        frame.add(board, BorderLayout.CENTER);
-//        frame.add(sidebar, BorderLayout.EAST);
-//        frame.setVisible(true);
+
         window = new WindowFrame();
-//        WindowFrame window = new WindowFrame();
-
-        /*ArrayList<String> chessboard = new ArrayList<>();
-        chessboard.add("R_BQK___");
-        chessboard.add("PPP__PP_");
-        chessboard.add("__NPP_n_");
-        chessboard.add("___Np___");
-        chessboard.add("___p____");
-        chessboard.add("__p_____");
-        chessboard.add("pp___pp_");
-        chessboard.add("rnb_kb_R");
-        chessboard.add("w");*/
-
 
     }
 
@@ -120,11 +98,6 @@ public class Main {
         ArrayList<ChessboardPoint> points = (ArrayList<ChessboardPoint>) game.getCanMovePoints(point);
         board.hint(points);
     }
-/*
-    public static List<String> LoadGameSelectedGame(String filename){
-        return null;
-    }
-*/
 
     public static void move(ChessboardPoint from, ChessboardPoint to) {
 
