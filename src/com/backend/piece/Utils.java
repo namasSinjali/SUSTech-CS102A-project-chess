@@ -115,12 +115,20 @@ public class Utils {
         }
         for (int[] candidateCoordinate :
                 KING_CHECK_MOVES) {
+            ChessboardPoint candidatePoint = new ChessboardPoint(kingPosition.X, kingPosition.Y).offset(candidateCoordinate[0], candidateCoordinate[1]);
+
+            if (candidatePoint != null && testBoard[candidatePoint.X][candidatePoint.Y] != null &&
+                    testBoard[candidatePoint.X][candidatePoint.Y].getChessColor() != selectedPiece.chessColor &&
+                    testBoard[candidatePoint.X][candidatePoint.Y] instanceof King) return true;
+        }
+        for (int[] candidateCoordinate :
+                KING_CHECK_MOVES) {
 
             ChessboardPoint candidatePoint = new ChessboardPoint(kingPosition.X, kingPosition.Y).offset(candidateCoordinate[0], candidateCoordinate[1]);
             while (candidatePoint != null) {
 
                 if (testBoard[candidatePoint.X][candidatePoint.Y] != null) {
-                    if (testBoard[candidatePoint.X][candidatePoint.Y].getChessColor() != selectedPiece.chessColor && !(testBoard[candidatePoint.X][candidatePoint.Y] instanceof Knight) && !(testBoard[candidatePoint.X][candidatePoint.Y] instanceof Pawn)) {
+                    if (testBoard[candidatePoint.X][candidatePoint.Y].getChessColor() != selectedPiece.chessColor && !(testBoard[candidatePoint.X][candidatePoint.Y] instanceof Knight) && !(testBoard[candidatePoint.X][candidatePoint.Y] instanceof Pawn && !(testBoard[candidatePoint.X][candidatePoint.Y] instanceof King))) {
 
                         if ((testBoard[candidatePoint.X][candidatePoint.Y] instanceof Bishop || testBoard[candidatePoint.X][candidatePoint.Y] instanceof Queen) && //{{1,1}, {-1,-1}, {1,-1}, {-1,1}};
                                 ((candidateCoordinate[0] == 1 && candidateCoordinate[1] == 1) ||
